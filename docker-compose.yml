@@ -1,0 +1,9 @@
+version: "3.7"
+services:
+  loadbalancer:
+    image: httpd:2.4.54-bullseye
+    ports:
+      - "8080:80"
+    volumes:
+      - ./loadbalancer/httpd.conf:/usr/local/apache2/conf/httpd.conf
+
