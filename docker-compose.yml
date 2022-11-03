@@ -6,4 +6,12 @@ services:
       - "8080:80"
     volumes:
       - ./loadbalancer/httpd.conf:/usr/local/apache2/conf/httpd.conf
+    depends_on:
+      - "app"
+
+  app:
+    build: frontend/
+    deploy:
+      mode: replicated
+      replicas: 2
 
