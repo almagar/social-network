@@ -30,7 +30,7 @@ services:
       - spring.jpa.show-sql="true"
 
   postgres:
-    image: postgres:9.5.7
+    image: postgres:15.0-bullseye
     restart: unless-stopped
     env_file: ./.env
     environment:
@@ -38,3 +38,5 @@ services:
       - POSTGRES_DATABASE=$POSTGRES_DATABASE
     ports:
       - "5454:5432"
+    volumes:
+      - ./db/:/docker-entrypoint-initdb.d/
