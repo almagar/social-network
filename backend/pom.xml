@@ -12,7 +12,7 @@
 	<artifactId>social-network</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>social-network</name>
-	<description>Demo project for Spring Boot</description>
+	<description>social network</description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>
@@ -20,6 +20,15 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-jdbc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-annotations</artifactId>
+			<version>3.5.6-Final</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
