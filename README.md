@@ -27,7 +27,7 @@ POSTGRES_DATABASE=socialnetwork
 2. Start the database:
 ```sh
 docker run --rm -d \
-        --name social-network-dev-db \
+        --name social-network-db-1 \
         -p 8181:5432 \
         -e POSTGRES_USER=socialnetworkuser \
         -e POSTGRES_PASSWORD=123456 \
@@ -36,9 +36,21 @@ docker run --rm -d \
         postgres:15.0-bullseye
 ```
 
-3. Start the backend:
+3. Start keycloak:
 ```sh
-mvnw spring-boot:run
+docker run --rm -d \
+    --name social-network-keycloak-1 \
+    -p 8282:8080 \
+    -e KEYCLOAK_USER=admin \
+    -e KEYCLOAK_PASSWORD=password \
+    -e KEYCLOAK_IMPORT=/opt/jboss/keycloak/data/import/socialnetwork.json \
+    -v $(pwd)/keycloak/socialnetwork.json:/opt/jboss/keycloak/data/import/socialnetwork.json \
+    quay.io/keycloak/keycloak:legacy
+```
+
+4. Start the backend:
+```sh
+./mvnw spring-boot:run
 ```
 
 
@@ -52,5 +64,5 @@ npm install
 
 2. Start the frontend:
 ```sh
-npm run dev
+npm run start
 ```

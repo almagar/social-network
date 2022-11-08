@@ -32,7 +32,7 @@ services:
     image: postgres:15.0-bullseye
     restart: unless-stopped
     ports:
-      - "5454:5432"
+      - "8181:5432"
     env_file: ./.env
     environment:
       - POSTGRES_USER=$POSTGRES_USER
@@ -40,3 +40,39 @@ services:
       - POSTGRES_DATABASE=$POSTGRES_DATABASE
     volumes:
       - ./db/:/docker-entrypoint-initdb.d/
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:legacy
+    ports:
+      - "8282:8080"
+    depends_on:
+      - "keycloakdb"
+    env_file: ./.env
+    environment:
+      - KEYCLOAK_USER=$KEYCLOAK_ADMIN
+      - KEYCLOAK_PASSWORD=$KEYCLOAK_ADMIN_PASSWORD
+      - KC_DB=$KC_DB
+      - KC_DB_URL=$KC_DB_URL
+      - KC_DB_USERNAME=$KC_DB_USERNAME
+      - KC_DB_PASSWORD=$KC_DB_PASSWORD
+      - KC_DB_SCHEMA=$KC_DB_SCHEMA
+      - DB_VENDOR=$KC_DB
+      - DB_ADDR=$KC_HOSTNAME
+      - DB_PORT=$KC_PORT
+      - DB_USER=$KC_DB_USERNAME
+      - DB_PASSWORD=$KC_DB_PASSWORD
+      - DB_DATABASE=$KC_DB
+      - POSTGRES_USER=$KC_DB_USERNAME
+      - POSTGRES_PASSWORD=$KC_DB_PASSWORD
+      - POSTGRES_DATABASE=$KC_DB_SCHEMA
+      - KEYCLOAK_IMPORT=/opt/jboss/keycloak/data/import/socialnetwork.json
+    volumes:
+      - ./keycloak/socialnetwork.json:/opt/jboss/keycloak/data/import/socialnetwork.json
+
+  keycloakdb:
+    image: postgres:15.0-bullseye
+    env_file: ./.env
+    environment:
+      - POSTGRES_USER=$KC_DB_USERNAME
+      - POSTGRES_PASSWORD=$KC_DB_PASSWORD
+      - POSTGRES_DATABASE=$KC_DB_SCHEMA
