@@ -17,10 +17,10 @@ function App() {
     <div className="App">
       <p>social-network:)</p>
       <button
-        onClick={() => getResource("http://localhost:8080/open")}
+        onClick={() => getResource(`${process.env.REACT_APP_BASE_URL}/open`)}
       >Open</button>
       <button
-        onClick={() => getResource("http://localhost:8080/user")}
+        onClick={() => getResource(`${process.env.REACT_APP_BASE_URL}/user`)}
       >Closed</button>
     </div>
   );

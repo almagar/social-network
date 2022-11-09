@@ -11,7 +11,13 @@ POSTGRES_USER=socialnetworkuser
 POSTGRES_PASSWORD=123456
 POSTGRES_DATABASE=socialnetwork
 ```
-2. Run `docker compose up --build -d`
+
+2. Create a `.env.development` file in `frontend/` with the following environment variables
+```
+REACT_APP_BASE_URL=http://backend:8080
+```
+
+3. Run `docker compose up --build -d`
 
 ### Development
 
@@ -57,12 +63,17 @@ docker run --rm -d \
 #### Frontend
 Requires NodeJS and npm
 
-1. Install dependencies:
+1. Create a `.env.development` file in `frontend/` with the following environment variables
+```
+REACT_APP_BASE_URL=http://localhost:8080
+```
+
+2. Install dependencies:
 ```sh
 npm install
 ```
 
-2. Start the frontend:
+3. Start the frontend:
 ```sh
 npm run start
 ```
