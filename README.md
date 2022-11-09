@@ -30,27 +30,40 @@ POSTGRES_PASSWORD=123456
 POSTGRES_DATABASE=socialnetwork
 ```
 
-2. Start the database:
+2. Create network:
+```
+docker network create socialnetwork
+```
+
+3. Start the database:
 ```sh
 docker run --rm -d \
-        --name social-network-db-1 \
+        --name db \
         -p 8181:5432 \
         -e POSTGRES_USER=socialnetworkuser \
         -e POSTGRES_PASSWORD=123456 \
         -e POSTGRES_DATABASE=socialnetwork \
         -v $(pwd)/db/:/docker-entrypoint-initdb.d/ \
+        --network socialnetwork \
         postgres:15.0-bullseye
 ```
 
-3. Start keycloak:
+4. Start keycloak:
 ```sh
 docker run --rm -d \
-    --name social-network-keycloak-1 \
+    --name keycloak \
     -p 8282:8080 \
     -e KEYCLOAK_USER=admin \
     -e KEYCLOAK_PASSWORD=password \
     -e KEYCLOAK_IMPORT=/opt/jboss/keycloak/data/import/socialnetwork.json \
+    -e KC_DB=postgres \
+    -e DB_VENDOR=postgres \
+    -e DB_ADDR=db \
+    -e DB_DATABASE=socialnetwork \
+    -e DB_USER=socialnetworkuser \
+    -e DB_PASSWORD=123456 \
     -v $(pwd)/keycloak/socialnetwork.json:/opt/jboss/keycloak/data/import/socialnetwork.json \
+    --network socialnetwork \
     quay.io/keycloak/keycloak:legacy
 ```
 
