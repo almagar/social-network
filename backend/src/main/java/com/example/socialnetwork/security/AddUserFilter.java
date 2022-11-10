@@ -28,20 +28,19 @@ public class AddUserFilter extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
             throws IOException, ServletException {
-        try {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            KeycloakPrincipal principal = (KeycloakPrincipal) authentication.getPrincipal();
-            AccessToken token = principal.getKeycloakSecurityContext().getToken();
-            UUID id = UUID.fromString(principal.toString());
-            String email = token.getEmail();
-            String username = token.getPreferredUsername();
-            if (!userDAO.existsById(id)) {
-                User user = new User(id, email, username);
-                userDAO.save(user);
-            }
-        } catch (Exception ex) {
-            System.err.println(ex.getMessage());
-            throw new RuntimeException();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            throw new AuthenticationException();
+        }
+
+        KeycloakPrincipal principal = (KeycloakPrincipal) authentication.getPrincipal();
+        AccessToken token = principal.getKeycloakSecurityContext().getToken();
+        UUID id = UUID.fromString(principal.toString());
+        String email = token.getEmail();
+        String username = token.getPreferredUsername();
+        if (!userDAO.existsById(id)) {
+            User user = new User(id, email, username);
+            userDAO.save(user);
         }
 
         filterChain.doFilter(servletRequest, servletResponse);

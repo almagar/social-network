@@ -1,7 +1,10 @@
-package com.example.socialnetwork;
+package com.example.socialnetwork.response;
 
 import org.springframework.http.HttpStatus;
 
+/**
+ * Enumeration of errors to be used in responses.
+ */
 public enum Error {
     RANDOM_ERROR(HttpStatus.BAD_REQUEST, "Random reason");
 
