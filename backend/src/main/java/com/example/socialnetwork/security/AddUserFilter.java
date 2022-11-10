@@ -7,17 +7,16 @@ import org.keycloak.representations.AccessToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.filter.GenericFilterBean;
+import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.security.sasl.AuthenticationException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.UUID;
 
-public class AddUserFilter extends GenericFilterBean {
+public class AddUserFilter extends OncePerRequestFilter {
     @Autowired
     private UserDAO userDAO;
 
@@ -26,23 +25,21 @@ public class AddUserFilter extends GenericFilterBean {
     }
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
-            throws IOException, ServletException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null) {
-            throw new AuthenticationException();
+        if (authentication != null) {
+            KeycloakPrincipal principal = (KeycloakPrincipal) authentication.getPrincipal();
+            AccessToken token = principal.getKeycloakSecurityContext().getToken();
+            UUID id = UUID.fromString(principal.toString());
+            String email = token.getEmail();
+            String username = token.getPreferredUsername();
+            if (!userDAO.existsById(id)) {
+                User user = new User(id, email, username);
+                userDAO.save(user);
+            }
         }
 
-        KeycloakPrincipal principal = (KeycloakPrincipal) authentication.getPrincipal();
-        AccessToken token = principal.getKeycloakSecurityContext().getToken();
-        UUID id = UUID.fromString(principal.toString());
-        String email = token.getEmail();
-        String username = token.getPreferredUsername();
-        if (!userDAO.existsById(id)) {
-            User user = new User(id, email, username);
-            userDAO.save(user);
-        }
-
-        filterChain.doFilter(servletRequest, servletResponse);
+        filterChain.doFilter(request, response);
     }
 }

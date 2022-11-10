@@ -44,19 +44,19 @@ public class RestConfig extends KeycloakWebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         super.configure(http);
         http
-                .addFilterAfter(new AddUserFilter(userDAO), KeycloakSecurityContextRequestFilter.class)
-            .authorizeHttpRequests(authorize -> authorize
-                .mvcMatchers("/token").permitAll()
-                .mvcMatchers("/open").permitAll()
-                //.mvcMatchers("/user").permitAll()
-                .mvcMatchers("/login").permitAll()
-                .anyRequest().authenticated())
-            //.csrf(csrf -> csrf.ignoringAntMatchers("/token"))
-            .csrf().disable()
-            .exceptionHandling(exceptions -> exceptions
-                .authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())
-                .accessDeniedHandler(new BearerTokenAccessDeniedHandler()))
-            .cors(Customizer.withDefaults());
+                .authorizeHttpRequests(authorize -> authorize
+                        .mvcMatchers("/token").permitAll()
+                        .mvcMatchers("/open").permitAll()
+                        .mvcMatchers("/user").permitAll()
+                        .mvcMatchers("/login").permitAll()
+                        .anyRequest().authenticated())
+                //.csrf(csrf -> csrf.ignoringAntMatchers("/token"))
+                .csrf().disable()
+                .exceptionHandling(exceptions -> exceptions
+                        .authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())
+                        .accessDeniedHandler(new BearerTokenAccessDeniedHandler()))
+                .addFilterAfter(new AddUserFilter(userDAO), KeycloakAuthenticatedActionsFilter.class)
+                .cors(Customizer.withDefaults());
     }
 
     @Bean

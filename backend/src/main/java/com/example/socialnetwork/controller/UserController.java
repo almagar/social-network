@@ -4,8 +4,7 @@ import com.example.socialnetwork.model.User;
 import com.example.socialnetwork.response.ResponseBuilder;
 import com.example.socialnetwork.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.keycloak.KeycloakPrincipal;
-import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -19,7 +18,7 @@ import java.util.Map;
 //@RequestMapping(path = "/user")
 @RequiredArgsConstructor
 public class UserController {
-    private final UserService userService;
+    @Autowired private final UserService userService;
 
     @GetMapping("/open")
     public List<String> getOpen() {
@@ -33,12 +32,8 @@ public class UserController {
         System.out.println("User: " + currentPrincipalName);
         System.out.println("Principal: " + authentication.getPrincipal());
         System.out.println("Authorities: " + authentication.getAuthorities());
-        KeycloakPrincipal keycloakPrincipal = (KeycloakPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        System.out.println("keycloakprincipal");
-        System.out.println(keycloakPrincipal);
-        System.out.printf(keycloakPrincipal.getKeycloakSecurityContext().getToken().getEmail());
-        return ResponseBuilder.data("hej").status(HttpStatus.CREATED).build();
-        //return userService.getAll();
+
+        return ResponseBuilder.data("hej").build();
     }
 
     @PostMapping
