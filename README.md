@@ -1,5 +1,5 @@
 # social-network
-Alma Garpenfeldt och Linus Ekman
+Alma Garpenfeldt & Linus Ekman
 
 ## Run
 Requires docker and docker compose
@@ -56,18 +56,12 @@ docker run --rm -d \
     -e KEYCLOAK_USER=admin \
     -e KEYCLOAK_PASSWORD=password \
     -e KEYCLOAK_IMPORT=/opt/jboss/keycloak/data/import/socialnetwork.json \
-    -e KC_DB=postgres \
-    -e DB_VENDOR=postgres \
-    -e DB_ADDR=db \
-    -e DB_DATABASE=socialnetwork \
-    -e DB_USER=socialnetworkuser \
-    -e DB_PASSWORD=123456 \
     -v $(pwd)/keycloak/socialnetwork.json:/opt/jboss/keycloak/data/import/socialnetwork.json \
     --network socialnetwork \
     quay.io/keycloak/keycloak:legacy
 ```
 
-4. Start the backend:
+5. Start the backend:
 ```sh
 ./mvnw spring-boot:run
 ```
