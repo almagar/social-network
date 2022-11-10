@@ -2,6 +2,7 @@ package com.example.socialnetwork.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.sql.Blob;
@@ -24,6 +25,14 @@ public class User {
 
     @Lob
     @JsonIgnore
-    @Column(columnDefinition = "bytea")
+    @Type(type = "org.hibernate.type.BinaryType")
     private Blob avatar;
+
+    public User() {}
+
+    public User(UUID id, String email, String username) {
+        this.id = id;
+        this.email = email;
+        this.username = username;
+    }
 }

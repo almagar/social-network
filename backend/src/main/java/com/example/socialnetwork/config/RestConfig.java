@@ -1,8 +1,12 @@
 package com.example.socialnetwork.config;
 
+import com.example.socialnetwork.dao.UserDAO;
+import com.example.socialnetwork.security.AddUserFilter;
 import org.keycloak.adapters.springsecurity.KeycloakConfiguration;
 import org.keycloak.adapters.springsecurity.authentication.KeycloakAuthenticationProvider;
 import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurerAdapter;
+import org.keycloak.adapters.springsecurity.filter.KeycloakAuthenticatedActionsFilter;
+import org.keycloak.adapters.springsecurity.filter.KeycloakSecurityContextRequestFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.Customizer;
@@ -22,6 +26,9 @@ import java.util.Arrays;
 @KeycloakConfiguration
 public class RestConfig extends KeycloakWebSecurityConfigurerAdapter {
     @Autowired
+    UserDAO userDAO;
+
+    @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         KeycloakAuthenticationProvider keycloakAuthenticationProvider = keycloakAuthenticationProvider();
         auth.authenticationProvider(keycloakAuthenticationProvider);
@@ -37,6 +44,7 @@ public class RestConfig extends KeycloakWebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         super.configure(http);
         http
+                .addFilterAfter(new AddUserFilter(userDAO), KeycloakSecurityContextRequestFilter.class)
             .authorizeHttpRequests(authorize -> authorize
                 .mvcMatchers("/token").permitAll()
                 .mvcMatchers("/open").permitAll()

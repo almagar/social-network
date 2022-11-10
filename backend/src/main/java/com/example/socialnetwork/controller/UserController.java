@@ -4,6 +4,7 @@ import com.example.socialnetwork.model.User;
 import com.example.socialnetwork.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.keycloak.KeycloakPrincipal;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,7 @@ public class UserController {
         return List.of("open", "not closed");
     }
 
-    @GetMapping("/user")
+    @GetMapping(value = "/user", produces = {MediaType.APPLICATION_JSON_VALUE})
     public List<String> getAll() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
