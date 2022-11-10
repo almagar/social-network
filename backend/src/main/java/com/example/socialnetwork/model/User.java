@@ -11,7 +11,6 @@ import java.util.UUID;
 @Data
 public class User {
     @Id
-    @GeneratedValue
     @Column(unique = true, nullable = false)
     private UUID id;
 
@@ -21,12 +20,10 @@ public class User {
     @Column(unique = true, nullable = false)
     private String username;
 
-    @Column(nullable = false)
-    private String password;
-
     private String description;
 
     @Lob
     @JsonIgnore
+    @Column(columnDefinition = "bytea")
     private Blob avatar;
 }

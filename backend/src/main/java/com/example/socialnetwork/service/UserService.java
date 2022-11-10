@@ -15,14 +15,4 @@ public class UserService {
     public List<User> getAll() {
         return userDAO.findAll().stream().toList();
     }
-
-    public void createUser(User user) {
-        if (user == null || user.getEmail() == null || user.getEmail().equals("") || user.getUsername() == null || user.getUsername().equals("") || user.getPassword() == null || user.getPassword().equals("")) {
-            return;
-        }
-        // make sure that id is not set, will be generated
-        user.setId(null);
-
-        userDAO.save(user);
-    }
 }
