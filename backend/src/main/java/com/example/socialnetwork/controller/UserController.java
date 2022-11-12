@@ -15,17 +15,12 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-//@RequestMapping(path = "/user")
+@RequestMapping(path = "/user", produces = {MediaType.APPLICATION_JSON_VALUE})
 @RequiredArgsConstructor
 public class UserController {
     @Autowired private final UserService userService;
 
-    @GetMapping("/open")
-    public List<String> getOpen() {
-        return List.of("open", "not closed");
-    }
-
-    @GetMapping(value = "/user", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @GetMapping
     public ResponseEntity<Map<String, Object>> getAll() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();

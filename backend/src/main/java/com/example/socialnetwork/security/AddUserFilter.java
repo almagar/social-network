@@ -20,7 +20,7 @@ import java.util.UUID;
 @Component
 public class AddUserFilter extends OncePerRequestFilter {
     @Autowired
-    private UserDAO userDAO;
+    private final UserDAO userDAO;
 
     public AddUserFilter(UserDAO userDAO) {
         this.userDAO = userDAO;
@@ -30,7 +30,7 @@ public class AddUserFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null) {
+        if (authentication != null && authentication.getPrincipal() instanceof KeycloakPrincipal<?>) {
             KeycloakPrincipal principal = (KeycloakPrincipal) authentication.getPrincipal();
             AccessToken token = principal.getKeycloakSecurityContext().getToken();
             UUID id = UUID.fromString(principal.toString());

@@ -6,15 +6,12 @@ import org.keycloak.adapters.springsecurity.KeycloakConfiguration;
 import org.keycloak.adapters.springsecurity.authentication.KeycloakAuthenticationProvider;
 import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurerAdapter;
 import org.keycloak.adapters.springsecurity.filter.KeycloakAuthenticatedActionsFilter;
-import org.keycloak.adapters.springsecurity.filter.KeycloakSecurityContextRequestFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.session.SessionRegistryImpl;
-import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationEntryPoint;
-import org.springframework.security.oauth2.server.resource.web.access.BearerTokenAccessDeniedHandler;
 import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.web.cors.CorsConfiguration;
@@ -47,14 +44,9 @@ public class RestConfig extends KeycloakWebSecurityConfigurerAdapter {
                 .authorizeHttpRequests(authorize -> authorize
                         .mvcMatchers("/token").permitAll()
                         .mvcMatchers("/open").permitAll()
-                        .mvcMatchers("/user").permitAll()
                         .mvcMatchers("/login").permitAll()
                         .anyRequest().authenticated())
-                //.csrf(csrf -> csrf.ignoringAntMatchers("/token"))
                 .csrf().disable()
-                .exceptionHandling(exceptions -> exceptions
-                        .authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())
-                        .accessDeniedHandler(new BearerTokenAccessDeniedHandler()))
                 .addFilterAfter(new AddUserFilter(userDAO), KeycloakAuthenticatedActionsFilter.class)
                 .cors(Customizer.withDefaults());
     }
