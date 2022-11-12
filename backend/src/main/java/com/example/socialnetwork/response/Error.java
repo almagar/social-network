@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
  * Enumeration of errors to be used in responses.
  */
 public enum Error {
-    RANDOM_ERROR(HttpStatus.BAD_REQUEST, "Random reason");
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "User not found");
 
     private final HttpStatus status;
     private final String reason;

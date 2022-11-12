@@ -10,10 +10,12 @@ public class UserDTO {
     private String id;
     private String username;
     private String description;
+    private String avatarUri;
 
-    public UserDTO(String id, String username, String description) {
+    public UserDTO(String id, String username, String description, String avatarUri) {
         this.id = id;
         this.username = username;
         this.description = description;
+        this.avatarUri = avatarUri;
     }
 }

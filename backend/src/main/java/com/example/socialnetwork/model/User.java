@@ -1,15 +1,19 @@
 package com.example.socialnetwork.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.sql.Blob;
 import java.util.UUID;
 
+/**
+ * User entity that is also mapped to a database.
+ */
 @Entity(name = "Users")
 @Data
+@NoArgsConstructor
 public class User {
     @Id
     @Column(unique = true, nullable = false)
@@ -24,11 +28,8 @@ public class User {
     private String description;
 
     @Lob
-    @JsonIgnore
     @Type(type = "org.hibernate.type.BinaryType")
     private Blob avatar;
-
-    public User() {}
 
     public User(UUID id, String email, String username) {
         this.id = id;

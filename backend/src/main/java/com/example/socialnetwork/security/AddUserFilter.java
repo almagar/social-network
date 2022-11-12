@@ -1,10 +1,10 @@
 package com.example.socialnetwork.security;
 
-import com.example.socialnetwork.dao.UserDAO;
 import com.example.socialnetwork.model.User;
+import com.example.socialnetwork.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.representations.AccessToken;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -18,13 +18,9 @@ import java.io.IOException;
 import java.util.UUID;
 
 @Component
+@RequiredArgsConstructor
 public class AddUserFilter extends OncePerRequestFilter {
-    @Autowired
-    private final UserDAO userDAO;
-
-    public AddUserFilter(UserDAO userDAO) {
-        this.userDAO = userDAO;
-    }
+    private final UserService userService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -36,9 +32,8 @@ public class AddUserFilter extends OncePerRequestFilter {
             UUID id = UUID.fromString(principal.toString());
             String email = token.getEmail();
             String username = token.getPreferredUsername();
-            if (!userDAO.existsById(id)) {
-                User user = new User(id, email, username);
-                userDAO.save(user);
+            if (!userService.userExists(id)) {
+                userService.createUser(new User(id, email, username));
             }
         }
 
