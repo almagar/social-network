@@ -1,7 +1,8 @@
 package com.example.socialnetwork.config;
 
-import com.example.socialnetwork.dao.UserDAO;
 import com.example.socialnetwork.security.AddUserFilter;
+import com.example.socialnetwork.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.keycloak.adapters.springsecurity.KeycloakConfiguration;
 import org.keycloak.adapters.springsecurity.authentication.KeycloakAuthenticationProvider;
 import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurerAdapter;
@@ -21,12 +22,13 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 
 @KeycloakConfiguration
+@RequiredArgsConstructor
 public class RestConfig extends KeycloakWebSecurityConfigurerAdapter {
     @Autowired
-    UserDAO userDAO;
+    private final UserService userService;
 
     @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+    private void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         KeycloakAuthenticationProvider keycloakAuthenticationProvider = keycloakAuthenticationProvider();
         auth.authenticationProvider(keycloakAuthenticationProvider);
     }
@@ -47,12 +49,12 @@ public class RestConfig extends KeycloakWebSecurityConfigurerAdapter {
                         .mvcMatchers("/login").permitAll()
                         .anyRequest().authenticated())
                 .csrf().disable()
-                .addFilterAfter(new AddUserFilter(userDAO), KeycloakAuthenticatedActionsFilter.class)
+                .addFilterAfter(new AddUserFilter(userService), KeycloakAuthenticatedActionsFilter.class)
                 .cors(Customizer.withDefaults());
     }
 
     @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
+    private CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:8080", "http://localhost:3000", "http://loadbalancer:8080", "http://app:8080"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
