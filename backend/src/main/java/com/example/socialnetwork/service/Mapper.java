@@ -10,7 +10,7 @@ import java.util.UUID;
  * Helper class to map between model classes and their related DTO classes.
  */
 @Component
-class Mapper {
+public class Mapper {
     /**
      * Convert a {@link User} into a {@link UserDTO}.
      * @param user the user to be converted.

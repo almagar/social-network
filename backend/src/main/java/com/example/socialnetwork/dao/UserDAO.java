@@ -2,6 +2,7 @@ package com.example.socialnetwork.dao;
 
 import com.example.socialnetwork.model.User;
 import org.springframework.data.util.Streamable;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -9,6 +10,7 @@ import java.util.UUID;
 /**
  * Data access object for the user entity.
  */
+@Repository
 public interface UserDAO extends GenericDAO<User, UUID> {
     /**
      * Find a {@link User} by username.
