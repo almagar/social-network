@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * The service class for the {@link User} entity.
+ * Service class for the {@link User} entity.
  */
 @Service
 @RequiredArgsConstructor
@@ -19,27 +19,35 @@ public class UserService {
     private final UserDAO userDAO;
 
     /**
-     * Checks if a user exists.
-     * @param id the id of the user to check for.
-     * @return true if the user exists, false otherwise.
+     * Stores a new {@link User}.
+     * @param user the {@link User} to be created.
      */
-    public boolean userExists(UUID id) {
+    public void create(User user) {
+        userDAO.save(user);
+    }
+
+    /**
+     * Determines whether a {@link User} exists by an id.
+     * @param id the id.
+     * @return true if the {@link User} exists, false otherwise.
+     */
+    public boolean exists(UUID id) {
         return userDAO.existsById(id);
     }
 
     /**
-     * Get all users.
-     * @return all users.
+     * Retrieves all {@link User}s.
+     * @return a list of {@link User}s.
      */
     public List<UserDTO> getAll() {
         return userDAO.findAll().stream().map(Mapper::toDTO).toList();
     }
 
     /**
-     * Get a user by username.
-     * @param username the username for the user to get.
-     * @return a {@link UserDTO} for the found user.
-     * @throws NotFoundException if no user by the username was found.
+     * Retrieves a {@link User} by its username.
+     * @param username the username.
+     * @return a {@link UserDTO} for the found {@link User}.
+     * @throws NotFoundException if no {@link User} vas found by the given username.
      */
     public UserDTO getByUsername(String username) throws NotFoundException {
         User user = userDAO.findByUsername(username).orElseThrow(NotFoundException::new);
@@ -47,19 +55,11 @@ public class UserService {
     }
 
     /**
-     * Search for usernames containing username.
-     * @param username usernames to search for.
-     * @return a list of found users.
+     * Retrieves all the {@link User}s whose usernames matches the given substring.
+     * @param username the username.
+     * @return a {@link List} of the found {@link User}s.
      */
     public List<UserDTO> searchByUsername(String username) {
         return userDAO.findByUsernameContaining(username).stream().map(Mapper::toDTO).toList();
-    }
-
-    /**
-     * Create a new user.
-     * @param user info for the user to create.
-     */
-    public void createUser(User user) {
-        userDAO.save(user);
     }
 }

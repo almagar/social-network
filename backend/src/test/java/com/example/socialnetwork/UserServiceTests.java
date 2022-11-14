@@ -19,23 +19,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-@EnableAutoConfiguration
-@SpringBootTest(classes = {UserService.class, UserDAO.class})
-@ActiveProfiles(profiles = "testing")
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class UserServiceTests {
+public class UserServiceTests extends AbstractTests {
     @Autowired
     private UserService userService;
 
-    @BeforeAll
-    public void setup() {
-        userService.createUser(getTestUser());
-    }
-
     @Test
     public void testUserExists() {
-        Assertions.assertTrue(userService.userExists(getTestUser().getId()));
-        Assertions.assertFalse(userService.userExists(UUID.randomUUID()));
+        Assertions.assertTrue(userService.exists(getTestUser().getId()));
+        Assertions.assertFalse(userService.exists(UUID.randomUUID()));
     }
 
     @Test
@@ -54,11 +45,9 @@ public class UserServiceTests {
 
     @Test
     public void testSearchByUsername() {
-        Assertions.assertEquals(List.of(Mapper.toDTO(getTestUser())), userService.searchByUsername("test"));
-        Assertions.assertEquals(Collections.emptyList(), userService.searchByUsername("test_x"));
-    }
-
-    private static User getTestUser() {
-        return new User(UUID.fromString("9728bbd4-2a7e-4cef-aa9e-8da4e2b21ed9"), "test@test.com", "testuser");
+        Assertions.assertEquals(List.of(Mapper.toDTO(getTestUser())),
+                userService.searchByUsername(getTestUser().getUsername()));
+        Assertions.assertEquals(Collections.emptyList(),
+                userService.searchByUsername(getTestUser().getUsername()) + "x");
     }
 }

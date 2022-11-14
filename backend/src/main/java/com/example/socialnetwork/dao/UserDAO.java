@@ -8,21 +8,21 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * Data access object for the user entity.
+ * Data access object for the {@link User} entity.
  */
 @Repository
 public interface UserDAO extends GenericDAO<User, UUID> {
     /**
-     * Find a {@link User} by username.
+     * Retrieves a {@link User} by its username.
      * @param username the username.
      * @return return {@link Optional<User>}.
      */
     Optional<User> findByUsername(String username);
 
     /**
-     * Search for {@link User}s matched by username.
-     * @param username username to search for.
-     * @return a {@link Streamable<User>} of the found users.
+     * Retrieves all the {@link User}s whose usernames matches the given substring.
+     * @param username username to be searched.
+     * @return a {@link Streamable} of the found {@link User}s.
      */
     Streamable<User> findByUsernameContaining(String username);
 }

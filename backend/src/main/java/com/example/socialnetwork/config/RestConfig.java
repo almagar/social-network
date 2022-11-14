@@ -1,6 +1,6 @@
 package com.example.socialnetwork.config;
 
-import com.example.socialnetwork.security.AddUserFilter;
+import com.example.socialnetwork.security.filter.AddUserFilter;
 import com.example.socialnetwork.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.keycloak.adapters.springsecurity.KeycloakConfiguration;
