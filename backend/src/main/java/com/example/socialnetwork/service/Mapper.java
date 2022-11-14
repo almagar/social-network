@@ -19,7 +19,7 @@ public class Mapper {
      * @return the converted {@link UserDTO}.
      */
     public static UserDTO toDTO(User user) {
-        String avatarUri = "/user" + user.getId().toString() + "/avatar";
+        String avatarUri = "/user/" + user.getId().toString() + "/avatar";
         return new UserDTO(user.getId().toString(), user.getUsername(), user.getDescription(), avatarUri);
     }
 
@@ -29,7 +29,7 @@ public class Mapper {
      * @return the converted {@link UserDTO}.
      */
     public static PostDTO toDTO(Post post) {
-        String imageUri = "/post" + post.getId().toString() + "/image";
+        String imageUri = "/post/" + post.getId().toString() + "/image";
         return new PostDTO(post.getId().toString(), toDTO(post.getCreator()), post.getBody(), imageUri,
                 post.getCreatedAt(), post.getUpdatedAt());
     }
@@ -49,11 +49,15 @@ public class Mapper {
      * @return the converted {@link Post}.
      */
     public static Post toModel(PostDTO dto) {
-        return new Post(fromStringToUUID(dto.getId()), toModel(dto.getCreator()), dto.getBody(), dto.getCreatedAt(),
-                dto.getUpdatedAt());
+        return new Post(toModel(dto.getCreator()), dto.getBody());
     }
 
-    private static UUID fromStringToUUID(String id) {
+    /**
+     * Creates a UUID from the given string if it matches the standard representation.
+     * @param id the id to be converted.
+     * @return the UUID if succeeded, null otherwise.
+     */
+    public static UUID fromStringToUUID(String id) {
         try {
             return UUID.fromString(id);
         } catch (IllegalArgumentException ex) {

@@ -21,7 +21,7 @@ import java.util.Map;
 @RequestMapping(path = "/user", produces = {MediaType.APPLICATION_JSON_VALUE})
 @RequiredArgsConstructor
 public class UserController {
-    @Autowired private final UserService userService;
+    private final UserService userService;
 
     @GetMapping(path = "/{username}")
     public ResponseEntity<Map<String, Object>> getByUsername(@PathVariable String username) {

@@ -37,14 +37,6 @@ public class Post {
 
     private LocalDateTime updatedAt;
 
-    public Post(UUID id, User creator, String body, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.id = id;
-        this.creator = creator;
-        this.body = body;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-    }
-
     public Post(User creator, String body) {
         this.creator = creator;
         this.body = body;

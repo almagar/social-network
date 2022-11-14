@@ -1,4 +1,4 @@
-package com.example.socialnetwork.security;
+package com.example.socialnetwork.security.filter;
 
 import com.example.socialnetwork.model.User;
 import com.example.socialnetwork.service.UserService;
@@ -32,8 +32,8 @@ public class AddUserFilter extends OncePerRequestFilter {
             UUID id = UUID.fromString(principal.toString());
             String email = token.getEmail();
             String username = token.getPreferredUsername();
-            if (!userService.userExists(id)) {
-                userService.createUser(new User(id, email, username));
+            if (!userService.exists(id)) {
+                userService.create(new User(id, email, username));
             }
         }
 
