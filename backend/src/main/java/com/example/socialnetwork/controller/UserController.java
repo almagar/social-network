@@ -7,11 +7,12 @@ import com.example.socialnetwork.response.Error;
 import com.example.socialnetwork.response.ResponseBuilder;
 import com.example.socialnetwork.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -24,7 +25,7 @@ import java.util.Map;
 public class UserController {
     private final UserService userService;
 
-    @GetMapping(path = "/profile")
+    @GetMapping("/profile")
     public ResponseEntity<Map<String, Object>> getProfile() {
         try {
             UserDTO user = userService.getProfile();
@@ -34,7 +35,7 @@ public class UserController {
         }
     }
 
-    @GetMapping(path = "/{username}")
+    @GetMapping("/{username}")
     public ResponseEntity<Map<String, Object>> getByUsername(@PathVariable String username) {
         try {
             UserDTO user = userService.getByUsername(username);
@@ -53,5 +54,53 @@ public class UserController {
     @GetMapping(path = "/{id}/avatar", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public ResponseEntity<Map<String, Object>> getAvatar(@PathVariable String id) {
         return null;
+    }
+
+    @PutMapping("/follow/{id}")
+    public ResponseEntity<Map<String, Object>> followUser(@PathVariable String id) {
+        try {
+            userService.followUser(id);
+            return ResponseBuilder.status(HttpStatus.OK).build();
+        } catch (NotFoundException ex) {
+            return ResponseBuilder.error(Error.USER_NOT_FOUND).build();
+        } catch (IllegalStateException ex) {
+            return ResponseBuilder.error(Error.ALREADY_FOLLOWING).build();
+        } catch (AuthenticationException ex) {
+            return ResponseBuilder.error(Error.AUTHENTICATION_ERROR).build();
+        }
+    }
+
+    @PutMapping("/unfollow/{id}")
+    public ResponseEntity<Map<String, Object>> unfollowUser(@PathVariable String id) {
+        try {
+            userService.unFollowUser(id);
+            return ResponseBuilder.status(HttpStatus.OK).build();
+        } catch (NotFoundException ex) {
+            return ResponseBuilder.error(Error.USER_NOT_FOUND).build();
+        } catch (IllegalStateException ex) {
+            return ResponseBuilder.error(Error.NOT_FOLLOWING).build();
+        } catch (AuthenticationException ex) {
+            return ResponseBuilder.error(Error.AUTHENTICATION_ERROR).build();
+        }
+    }
+
+    @GetMapping("/following")
+    public ResponseEntity<Map<String, Object>> getFollowingList() {
+        try {
+            Collection<UserDTO> friends = userService.getFollowingList();
+            return ResponseBuilder.data(friends).build();
+        } catch (AuthenticationException ex) {
+            return ResponseBuilder.error(Error.AUTHENTICATION_ERROR).build();
+        }
+    }
+
+    @GetMapping("/{id}/following")
+    public ResponseEntity<Map<String, Object>> getFollowingList(@PathVariable String id) {
+        try {
+            Collection<UserDTO> friends = userService.getFollowingList(id);
+            return ResponseBuilder.data(friends).build();
+        } catch (NotFoundException ex) {
+            return ResponseBuilder.error(Error.USER_NOT_FOUND).build();
+        }
     }
 }

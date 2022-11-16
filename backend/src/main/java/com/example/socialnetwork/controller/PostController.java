@@ -9,10 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -25,8 +22,8 @@ import java.util.Map;
 public class PostController {
     private final PostService postService;
 
-    @PostMapping(params = {"body"})
-    public ResponseEntity<Map<String, Object>> create(@RequestParam String body) {
+    @PostMapping
+    public ResponseEntity<Map<String, Object>> create(@RequestBody String body) {
         try {
             postService.create(body);
             return ResponseBuilder.status(HttpStatus.OK).build();

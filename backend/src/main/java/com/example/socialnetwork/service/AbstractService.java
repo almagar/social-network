@@ -18,7 +18,7 @@ import java.util.UUID;
  */
 @RequiredArgsConstructor
 abstract class AbstractService {
-    private final UserDAO userDAO;
+    protected final UserDAO userDAO;
 
     protected User getLoggedInUser() throws AuthenticationException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

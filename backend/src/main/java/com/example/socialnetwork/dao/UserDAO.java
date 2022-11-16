@@ -25,4 +25,9 @@ public interface UserDAO extends GenericDAO<User, UUID> {
      * @return a {@link Streamable} of the found {@link User}s.
      */
     Streamable<User> findByUsernameContaining(String username);
+
+    /**
+     * Deletes the {@link User} by the given id's followers.
+     * @param id the id of the {@link User}.
+     */
 }
