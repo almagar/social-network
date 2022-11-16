@@ -1,6 +1,8 @@
 import { ChakraProvider } from "@chakra-ui/react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Layout from "./components/Layout";
+import Profile from "./components/Profile";
+import getProfileData from "./loaders/profile";
 
 const router = createBrowserRouter([
   {
@@ -8,8 +10,9 @@ const router = createBrowserRouter([
     element: <Layout />,
     children: [
       {
-        path: "hej",
-        element: <div>hej</div>,
+        path: "profile",
+        element: <Profile />,
+        loader: getProfileData,
       },
     ],
   },
