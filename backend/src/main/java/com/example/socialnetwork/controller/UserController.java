@@ -1,6 +1,7 @@
 package com.example.socialnetwork.controller;
 
 import com.example.socialnetwork.dto.UserDTO;
+import com.example.socialnetwork.model.exception.AuthenticationException;
 import com.example.socialnetwork.model.exception.NotFoundException;
 import com.example.socialnetwork.response.Error;
 import com.example.socialnetwork.response.ResponseBuilder;
@@ -22,6 +23,16 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+
+    @GetMapping(path = "/profile")
+    public ResponseEntity<Map<String, Object>> getProfile() {
+        try {
+            UserDTO user = userService.getProfile();
+            return ResponseBuilder.data(user).build();
+        } catch (AuthenticationException ex) {
+            return ResponseBuilder.error(Error.AUTHENTICATION_ERROR).build();
+        }
+    }
 
     @GetMapping(path = "/{username}")
     public ResponseEntity<Map<String, Object>> getByUsername(@PathVariable String username) {

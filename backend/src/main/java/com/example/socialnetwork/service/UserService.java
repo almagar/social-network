@@ -3,6 +3,7 @@ package com.example.socialnetwork.service;
 import com.example.socialnetwork.dao.UserDAO;
 import com.example.socialnetwork.dto.UserDTO;
 import com.example.socialnetwork.model.User;
+import com.example.socialnetwork.model.exception.AuthenticationException;
 import com.example.socialnetwork.model.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,9 +15,13 @@ import java.util.UUID;
  * Service class for the {@link User} entity.
  */
 @Service
-@RequiredArgsConstructor
-public class UserService {
+public class UserService extends AbstractService {
     private final UserDAO userDAO;
+
+    public UserService(UserDAO userDAO) {
+        super(userDAO);
+        this.userDAO = userDAO;
+    }
 
     /**
      * Stores a new {@link User}.
@@ -52,6 +57,10 @@ public class UserService {
     public UserDTO getByUsername(String username) throws NotFoundException {
         User user = userDAO.findByUsername(username).orElseThrow(NotFoundException::new);
         return Mapper.toDTO(user);
+    }
+
+    public UserDTO getProfile() throws AuthenticationException {
+        return Mapper.toDTO(getLoggedInUser());
     }
 
     /**

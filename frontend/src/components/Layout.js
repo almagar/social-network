@@ -15,7 +15,7 @@ function Layout(props) {
                 Nav
             </GridItem>
             <GridItem pl='2' bg='green.300' area={'main'}>
-                <Link to="/hej">Hej</Link>
+                <Link to="/profile">Profile</Link>
                 <Outlet />
             </GridItem>
             <GridItem pl='2' bg='blue.300' area={'side'}>
