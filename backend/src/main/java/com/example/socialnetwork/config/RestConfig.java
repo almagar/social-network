@@ -46,7 +46,7 @@ public class RestConfig extends KeycloakWebSecurityConfigurerAdapter {
                 .authorizeHttpRequests(authorize -> authorize
                         .mvcMatchers("/token").permitAll()
                         .mvcMatchers("/open").permitAll()
-                        .mvcMatchers("/login").permitAll()
+                        .mvcMatchers("/chat/**").permitAll()
                         .anyRequest().authenticated())
                 .csrf().disable()
                 .addFilterAfter(new AddUserFilter(userService), KeycloakAuthenticatedActionsFilter.class)
