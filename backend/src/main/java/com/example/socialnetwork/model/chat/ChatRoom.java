@@ -2,32 +2,39 @@ package com.example.socialnetwork.model.chat;
 
 import com.example.socialnetwork.model.User;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
-@RequiredArgsConstructor
 @Data
 public class ChatRoom {
+    public ChatRoom(String name, User owner) {
+        this.name = name;
+        this.owner = owner;
+    }
+
     @Id
+    @GeneratedValue
     @Column(unique = true, nullable = false)
-    private final UUID id;
+    private UUID id;
 
     @Column(nullable = false)
     private final String name;
 
-    @JoinColumn(table = "Users", nullable = false, updatable = false, referencedColumnName = "id")
-    private final UUID owner;
+    @ManyToOne(targetEntity = User.class)
+    @JoinColumn(nullable = false, updatable = false)
+    private final User owner;
 
     @ElementCollection
     @Column(nullable = false)
-    private Set<User> users;
+    private Set<User> users = new HashSet<>();
 
     @ElementCollection
     @Column
-    private List<WSOutputMessage> messages;
+    private List<WSOutputMessage> messages = new ArrayList<>();
+
+    public void addUserToRoom(User user) {
+        this.users.add(user);
+    }
 }

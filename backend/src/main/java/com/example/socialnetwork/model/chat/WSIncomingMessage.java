@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Data
 @RequiredArgsConstructor
-public class WSMessage {
-    private final String from;
-    private final String text;
+public class WSIncomingMessage {
+    private final String fromUser;
+    private final String msg;
 }
