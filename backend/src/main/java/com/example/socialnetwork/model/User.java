@@ -1,12 +1,14 @@
 package com.example.socialnetwork.model;
 
 import lombok.Getter;
+import com.example.socialnetwork.model.chat.ChatRoom;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.*;
+import java.util.UUID;
 
 /**
  * User entity that is also mapped to a database.
@@ -32,6 +34,7 @@ public class User {
     @Column(nullable = false)
     private String lastname;
 
+    @Column
     private String description;
 
     @Lob
@@ -49,6 +52,9 @@ public class User {
             joinColumns = @JoinColumn(name = "following_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Collection<User> followers = new HashSet<>();
+
+    @ElementCollection
+    private Set<ChatRoom> chatRooms;
 
     public User(UUID id, String email, String username, String firstname, String lastname) {
         this.id = id;
