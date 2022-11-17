@@ -39,7 +39,7 @@ public abstract class AbstractTests {
         userService.create(testUser);
     }
 
-    protected User getTestUser() {
+    protected User getLoggedInUser() {
         return this.testUser;
     }
 }

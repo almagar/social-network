@@ -6,6 +6,7 @@ import com.example.socialnetwork.model.exception.NotFoundException;
 import com.example.socialnetwork.service.Mapper;
 import com.example.socialnetwork.service.UserService;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -17,45 +18,78 @@ public class UserServiceTests extends AbstractTests {
     @Autowired
     private UserService userService;
 
+    @BeforeEach
+    private void addTemporaryUser() {
+        userService.create(getTemporaryUser());
+    }
+
     @Test
     public void testUserExists() {
-        Assertions.assertTrue(userService.exists(getTestUser().getId()));
+        Assertions.assertTrue(userService.exists(getLoggedInUser().getId()));
+    }
+
+    @Test
+    public void testUserNotExists() {
         Assertions.assertFalse(userService.exists(UUID.randomUUID()));
     }
 
     @Test
     public void testGetAll() {
-        Assertions.assertEquals(List.of(Mapper.toDTO(getTestUser())), userService.getAll());
+        Assertions.assertEquals(List.of(
+                Mapper.toDTO(getLoggedInUser()), Mapper.toDTO(getTemporaryUser())), userService.getAll());
     }
 
     @Test
     public void testGetByUsername() {
-        String name = getTestUser().getUsername();
+        String name = getLoggedInUser().getUsername();
         UserDTO userDTO = userService.getByUsername(name);
 
         Assertions.assertEquals(name, userDTO.getUsername());
+    }
+
+    @Test
+    public void testGetByNonExistingUsernameThrowsException() {
         Assertions.assertThrows(NotFoundException.class, () -> userService.getByUsername("non_existing"));
     }
 
     @Test
     public void testSearchByUsername() {
-        Assertions.assertEquals(List.of(Mapper.toDTO(getTestUser())),
-                userService.searchByUsername(getTestUser().getUsername()));
+        Assertions.assertEquals(List.of(Mapper.toDTO(getLoggedInUser())),
+                userService.searchByUsername(getLoggedInUser().getUsername()));
+    }
+
+    @Test
+    public void testSearchByNonExistingUsername() {
         Assertions.assertEquals(Collections.emptyList(),
-                userService.searchByUsername(getTestUser().getUsername() + "x"));
+                userService.searchByUsername(getLoggedInUser().getUsername() + "x"));
     }
 
     @Test
     public void testFollowUnFollowAndGetFollowingList() {
-        User tmpUser = new User(UUID.randomUUID(), "email@example.com", "example");
-        userService.create(tmpUser);
+        User tmpUser = getTemporaryUser();
         userService.followUser(tmpUser.getId().toString());
         Assertions.assertEquals(List.of(Mapper.toDTO(tmpUser)), userService.getFollowingList());
         Assertions.assertEquals(List.of(Mapper.toDTO(tmpUser)),
-                userService.getFollowingList(getTestUser().getId().toString()));
+                userService.getFollowingList(getLoggedInUser().getId().toString()));
+    }
 
-        // Delete the user in the following list
-        userService.delete(tmpUser);
+    @Test
+    public void testUnfollow() {
+        User tmpUser = getTemporaryUser();
+        userService.followUser(tmpUser.getId().toString());
+        userService.unFollowUser(tmpUser.getId().toString());
         Assertions.assertEquals(Collections.emptyList(), userService.getFollowingList());
+    }
+
+    @Test
+    public void testDeleteUser() {
+        User tmpUser = getTemporaryUser();
+        userService.delete(tmpUser);
+        Assertions.assertFalse(userService.exists(getTemporaryUser().getId()));
+    }
+
+    private static User getTemporaryUser() {
+        return new User(UUID.fromString(
+                "70b14f39-178f-4068-86a7-358c7a032d4c"), "email@example.com", "example");
     }
 }
