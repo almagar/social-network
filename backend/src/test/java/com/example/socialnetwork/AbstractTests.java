@@ -3,6 +3,7 @@ package com.example.socialnetwork;
 import com.c4_soft.springaddons.security.oauth2.test.annotations.OpenIdClaims;
 import com.c4_soft.springaddons.security.oauth2.test.annotations.keycloak.WithMockKeycloakAuth;
 import com.example.socialnetwork.model.User;
+import com.example.socialnetwork.service.ChatRoomService;
 import com.example.socialnetwork.service.PostService;
 import com.example.socialnetwork.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,7 +20,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.UUID;
 
 @EnableAutoConfiguration
-@SpringBootTest(classes = {PostService.class, UserService.class})
+@SpringBootTest(classes = {PostService.class, UserService.class, ChatRoomService.class})
 @ActiveProfiles(profiles = "testing")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @WithMockKeycloakAuth(claims =
