@@ -1,9 +1,11 @@
 package com.example.socialnetwork.service;
 
+import com.example.socialnetwork.dto.ChatRoomDTO;
 import com.example.socialnetwork.dto.PostDTO;
 import com.example.socialnetwork.dto.UserDTO;
 import com.example.socialnetwork.model.Post;
 import com.example.socialnetwork.model.User;
+import com.example.socialnetwork.model.chat.ChatRoom;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -36,6 +38,19 @@ public class Mapper {
     }
 
     /**
+     * Converts a {@link ChatRoom} into a {@link ChatRoomDTO}.
+     * @param chatRoom the {@link ChatRoom} to be converted.
+     * @return the converted {@link ChatRoomDTO}.
+     */
+    public static ChatRoomDTO toDTO(ChatRoom chatRoom) {
+        return new ChatRoomDTO(
+                chatRoom.getId().toString(),
+                chatRoom.getName(),
+                toDTO(chatRoom.getOwner()),
+                chatRoom.getUsers().stream().map(Mapper::toDTO).toList());
+    }
+
+    /**
      * Converts a {@link UserDTO} into a {@link User}.
      * @param dto the {@link UserDTO} to be converted.
      * @return the converted {@link User}.
@@ -52,6 +67,15 @@ public class Mapper {
      */
     public static Post toModel(PostDTO dto) {
         return new Post(toModel(dto.getCreator()), dto.getBody());
+    }
+
+    /**
+     * Converts a {@link ChatRoomDTO} into a {@link ChatRoom}.
+     * @param chatRoomDTO the {@link ChatRoomDTO} to be converted.
+     * @return the converted {@link ChatRoom}.
+     */
+    public static ChatRoom toModel(ChatRoomDTO chatRoomDTO) {
+        return new ChatRoom(chatRoomDTO.getName(), toModel(chatRoomDTO.getOwner()));
     }
 
     /**
