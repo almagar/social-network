@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 public class UserServiceTests extends AbstractTests {
@@ -20,7 +21,7 @@ public class UserServiceTests extends AbstractTests {
 
     @BeforeEach
     private void addTemporaryUser() {
-        userService.create(getTemporaryUser());
+        userService.create(getExampleUser());
     }
 
     @Test
@@ -36,7 +37,7 @@ public class UserServiceTests extends AbstractTests {
     @Test
     public void testGetAll() {
         Assertions.assertEquals(List.of(
-                Mapper.toDTO(getLoggedInUser()), Mapper.toDTO(getTemporaryUser())), userService.getAll());
+                Mapper.toDTO(getLoggedInUser()), Mapper.toDTO(getExampleUser())), userService.getAll());
     }
 
     @Test
@@ -66,7 +67,7 @@ public class UserServiceTests extends AbstractTests {
 
     @Test
     public void testFollowUnFollowAndGetFollowingList() {
-        User tmpUser = getTemporaryUser();
+        User tmpUser = getExampleUser();
         userService.followUser(tmpUser.getId().toString());
         Assertions.assertEquals(List.of(Mapper.toDTO(tmpUser)), userService.getFollowingList());
         Assertions.assertEquals(List.of(Mapper.toDTO(tmpUser)),
@@ -75,7 +76,7 @@ public class UserServiceTests extends AbstractTests {
 
     @Test
     public void testUnfollow() {
-        User tmpUser = getTemporaryUser();
+        User tmpUser = getExampleUser();
         userService.followUser(tmpUser.getId().toString());
         userService.unFollowUser(tmpUser.getId().toString());
         Assertions.assertEquals(Collections.emptyList(), userService.getFollowingList());
@@ -83,13 +84,18 @@ public class UserServiceTests extends AbstractTests {
 
     @Test
     public void testDeleteUser() {
-        User tmpUser = getTemporaryUser();
+        User tmpUser = getExampleUser();
         userService.delete(tmpUser);
-        Assertions.assertFalse(userService.exists(getTemporaryUser().getId()));
+        Assertions.assertFalse(userService.exists(getExampleUser().getId()));
     }
 
-    private static User getTemporaryUser() {
+    protected static User getExampleUser() {
         return new User(UUID.fromString(
                 "70b14f39-178f-4068-86a7-358c7a032d4c"), "email@example.com", "example");
+    }
+
+    protected static User getRandomUser() {
+        int randomInt = new Random().nextInt(1000);
+        return new User(UUID.randomUUID(), randomInt + "@example.com", "user" + randomInt);
     }
 }

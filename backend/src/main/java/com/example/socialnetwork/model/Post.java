@@ -23,7 +23,7 @@ public class Post {
 
     @ManyToOne
     @JoinColumn(nullable = false)
-    private User creator;
+    private User user;
 
     @Column(nullable = false)
     private String body;
@@ -37,8 +37,8 @@ public class Post {
 
     private LocalDateTime updatedAt;
 
-    public Post(User creator, String body) {
-        this.creator = creator;
+    public Post(User user, String body) {
+        this.user = user;
         this.body = body;
         this.createdAt = LocalDateTime.now(); // todo: timezone?
     }

@@ -30,7 +30,7 @@ public class Mapper {
      */
     public static PostDTO toDTO(Post post) {
         String imageUri = "/post/" + post.getId().toString() + "/image";
-        return new PostDTO(post.getId().toString(), toDTO(post.getCreator()), post.getBody(), imageUri,
+        return new PostDTO(post.getId().toString(), toDTO(post.getUser()), post.getBody(), imageUri,
                 post.getCreatedAt(), post.getUpdatedAt());
     }
 

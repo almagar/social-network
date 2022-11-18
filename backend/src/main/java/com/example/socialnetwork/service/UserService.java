@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -88,12 +87,7 @@ public class UserService extends AbstractService {
      */
     @Transactional
     public void followUser(String id) throws NotFoundException, IllegalStateException, AuthenticationException {
-        Optional<User> found = userDAO.findById(Mapper.fromStringToUUID(id));
-        if (found.isEmpty()) {
-            throw new NotFoundException();
-        }
-
-        User user = found.get();
+        User user = userDAO.findById(Mapper.fromStringToUUID(id)).orElseThrow(NotFoundException::new);
         User loggedInUser = getLoggedInUser();
         if (loggedInUser.getFollowing().contains(user)) {
             throw new IllegalStateException();
@@ -112,12 +106,7 @@ public class UserService extends AbstractService {
      */
     @Transactional
     public void unFollowUser(String id) throws NotFoundException, IllegalStateException, AuthenticationException {
-        Optional<User> found = userDAO.findById(Mapper.fromStringToUUID(id));
-        if (found.isEmpty()) {
-            throw new NotFoundException();
-        }
-
-        User user = found.get();
+        User user = userDAO.findById(Mapper.fromStringToUUID(id)).orElseThrow(NotFoundException::new);
         User loggedInUser = getLoggedInUser();
         if (!loggedInUser.getFollowing().contains(user)) {
             throw new IllegalStateException();
@@ -144,11 +133,7 @@ public class UserService extends AbstractService {
      * @throws NotFoundException if no {@link User} was found with the given id.
      */
     public Collection<UserDTO> getFollowingList(String id) throws NotFoundException {
-        Optional<User> found = userDAO.findById(Mapper.fromStringToUUID(id));
-        if (found.isEmpty()) {
-            throw new NotFoundException();
-        }
-
-        return found.get().getFollowing().stream().map(Mapper::toDTO).toList();
+        User user = userDAO.findById(Mapper.fromStringToUUID(id)).orElseThrow(NotFoundException::new);
+        return user.getFollowing().stream().map(Mapper::toDTO).toList();
     }
 }
