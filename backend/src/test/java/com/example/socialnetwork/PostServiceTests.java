@@ -10,7 +10,9 @@ import com.example.socialnetwork.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
@@ -22,12 +24,12 @@ public class PostServiceTests extends AbstractTests {
 
     @Test
     public void testCreateNullPostThrowsException() {
-        Assertions.assertThrows(RequiredFieldsException.class, () -> postService.create(null));
+        Assertions.assertThrows(RequiredFieldsException.class, () -> postService.create(null, (MultipartFile) null));
     }
 
     @Test
-    public void testGetPostsByUsername() {
-        PostDTO dto = postService.create("testing");
+    public void testGetPostsByUsername() throws IOException {
+        PostDTO dto = postService.create("testing", (MultipartFile) null);
         List<PostDTO> dtos = (List<PostDTO>) postService.getPostsByUsername(
                 getLoggedInUser().getUsername(), 0, 1);
         Assertions.assertEquals(dto.getId(), dtos.get(0).getId());

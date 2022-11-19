@@ -6,14 +6,18 @@ import com.example.socialnetwork.dto.PostDTO;
 import com.example.socialnetwork.model.Post;
 import com.example.socialnetwork.model.User;
 import com.example.socialnetwork.model.exception.AuthenticationException;
+import com.example.socialnetwork.model.exception.IllegalContentTypeException;
 import com.example.socialnetwork.model.exception.NotFoundException;
 import com.example.socialnetwork.model.exception.RequiredFieldsException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Collection;
 
 /**
@@ -31,20 +35,41 @@ public class PostService extends AbstractService {
     /**
      * Stores a new {@link Post} created by the authenticated {@link User}.
      * @param body the body.
-     * @return the created {@link PostDTO}.
+     * @return a {@link PostDTO} for the created {@link Post}.
      * @throws RequiredFieldsException if the given body is null.
      * @throws AuthenticationException if an authentication error has occurred.
+     * @throws IllegalContentTypeException if the given image has a wrong content-type.
+     * @throws IOException if an I/O exception has occurred.
      */
-    public PostDTO create(String body) throws RequiredFieldsException, AuthenticationException {
+    public PostDTO create(String body, MultipartFile image)
+            throws RequiredFieldsException, AuthenticationException, IllegalContentTypeException, IOException {
         if (body == null) {
             throw new RequiredFieldsException();
         }
 
-        Post post = new Post(getLoggedInUser(), body);
+        Post post;
+        if (image == null) {
+            post = new Post(getLoggedInUser(), body);
+        } else {
+            String type = image.getContentType();
+            if (type != null && (type.equals("image/png") || type.equals("image/jpeg"))) {
+                post = new Post(getLoggedInUser(), body, image.getBytes());
+            } else {
+                throw new IllegalContentTypeException();
+            }
+        }
+
         return Mapper.toDTO(postDAO.save(post));
     }
 
-    public Post create(String body, User creator) {
+    /**
+     * Stores a new {@link Post} created by the given {@link User}.
+     * @param body the body.
+     * @param creator the {@link User} creator.
+     * @return the created {@link Post} is the creation was successfully.
+     * @throws RequiredFieldsException if the given body is null.
+     */
+    public Post create(String body, User creator) throws RequiredFieldsException {
         if (body == null) {
             throw new RequiredFieldsException();
         }
@@ -93,5 +118,57 @@ public class PostService extends AbstractService {
         Page<Post> posts = postDAO.getAllByUsers(getLoggedInUser().getFollowing(),
                 PageRequest.of(page, pageSize, Sort.by("created_at")));
         return posts.stream().map(Mapper::toDTO).toList();
+    }
+
+    /**
+     * Updates the {@link Post} given by its id.
+     * @param id the {@link Post} id.
+     * @param body the new body.
+     * @param image the new image.
+     * @return a {@link PostDTO} for the updated {@link Post}.
+     * @throws NotFoundException if no {@link Post} was found with the given id.
+     * @throws AuthenticationException if the {@link Post} was not created by the authenticated {@link User}.
+     * @throws IOException if an I/O exception has occurred.
+     */
+    public PostDTO update(String id, String body, MultipartFile image)
+            throws NotFoundException, AuthenticationException, IOException {
+        Post post = postDAO.findById(Mapper.fromStringToUUID(id)).orElseThrow(NotFoundException::new);
+        if (!post.getUser().equals(getLoggedInUser())) {
+            throw new AuthenticationException();
+        }
+
+        boolean updated = false;
+        if (body != null) {
+            post.setBody(body);
+            updated = true;
+        }
+
+        if (image != null) {
+            String type = image.getContentType();
+            if (type != null && (type.equals("image/png") || type.equals("image/jpeg"))) {
+                post.setImage(image.getBytes());
+                updated = true;
+            } else {
+                throw new IllegalContentTypeException();
+            }
+        }
+
+        if (updated) {
+            post.setUpdatedAt(LocalDateTime.now());
+            postDAO.save(post);
+        }
+
+        return Mapper.toDTO(post);
+    }
+
+    /**
+     * Retrieves the image for a {@link Post} given by its id.
+     * @param id the {@link Post}'s id.
+     * @return the image represented by a byte array.
+     * @throws NotFoundException if no {@link Post} was found with the given id.
+     */
+    public byte[] getImage(String id) throws NotFoundException {
+        Post post = postDAO.findById(Mapper.fromStringToUUID(id)).orElseThrow(NotFoundException::new);
+        return post.getImage();
     }
 }
