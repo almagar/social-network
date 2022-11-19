@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -22,6 +23,18 @@ public class UserServiceTests extends AbstractTests {
     @BeforeEach
     private void addTemporaryUser() {
         userService.create(getExampleUser());
+    }
+
+    @Test
+    public void testUpdateUser() {
+        String newDescription = "new description";
+        try {
+            userService.update(newDescription, null);
+        } catch (IOException ex) {
+            System.err.println(ex.getMessage());
+        }
+
+        Assertions.assertEquals(newDescription, userService.getProfile().getDescription());
     }
 
     @Test

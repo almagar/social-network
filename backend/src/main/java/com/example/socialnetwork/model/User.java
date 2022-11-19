@@ -35,7 +35,7 @@ public class User {
 
     @Lob
     @Type(type = "org.hibernate.type.BinaryType")
-    private Blob avatar;
+    private byte[] avatar;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "follow",

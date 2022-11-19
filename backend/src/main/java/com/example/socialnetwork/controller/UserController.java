@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collection;
 import java.util.List;
@@ -35,6 +36,36 @@ public class UserController {
         }
     }
 
+    @PutMapping(path = "/profile", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<Map<String, Object>> update(
+            @RequestParam(required = false) String description, @RequestParam(required = false)MultipartFile avatar) {
+        try {
+            return ResponseBuilder.data(userService.update(description, avatar)).build();
+        } catch (AuthenticationException ex) {
+            return ResponseBuilder.error(Error.AUTHENTICATION_ERROR).build();
+        } catch (Exception ex) {
+            return ResponseBuilder.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    @GetMapping(path = "/avatar", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
+    public Object getAvatar() {
+        try {
+            return userService.getAvatar();
+        } catch (AuthenticationException ex) {
+            return ResponseBuilder.error(Error.AUTHENTICATION_ERROR).build();
+        }
+    }
+
+    @GetMapping(path = "/{id}/avatar", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})
+    public Object getAvatar(@PathVariable String id) {
+        try {
+            return userService.getAvatar(id);
+        } catch (NotFoundException ex) {
+            return ResponseBuilder.error(Error.USER_NOT_FOUND).build();
+        }
+    }
+
     @GetMapping("/{username}")
     public ResponseEntity<Map<String, Object>> getByUsername(@PathVariable String username) {
         try {
@@ -49,11 +80,6 @@ public class UserController {
     public ResponseEntity<Map<String, Object>> searchByUsername(@RequestParam String username) {
         List<UserDTO> users = userService.searchByUsername(username);
         return ResponseBuilder.data(users).build();
-    }
-
-    @GetMapping(path = "/{id}/avatar", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public ResponseEntity<Map<String, Object>> getAvatar(@PathVariable String id) {
-        return null;
     }
 
     @PutMapping("/follow/{id}")

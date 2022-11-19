@@ -4,10 +4,13 @@ import com.example.socialnetwork.dao.UserDAO;
 import com.example.socialnetwork.dto.UserDTO;
 import com.example.socialnetwork.model.User;
 import com.example.socialnetwork.model.exception.AuthenticationException;
+import com.example.socialnetwork.model.exception.IllegalContentTypeException;
 import com.example.socialnetwork.model.exception.NotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -27,6 +30,39 @@ public class UserService extends AbstractService {
      */
     public void create(User user) {
         userDAO.save(user);
+    }
+
+    /**
+     * Updated the authenticated {@link User} profile.
+     * @param description the new description.
+     * @param avatar the new avatar.
+     * @return a {@link UserDTO} of the updated {@link User}.
+     * @throws AuthenticationException if an authentication error has occurred.
+     * @throws IOException if an I/O exception has occurred.
+     */
+    public UserDTO update(String description, MultipartFile avatar) throws IOException {
+        User loggedInUser = getLoggedInUser();
+        boolean updated = false;
+        if (description != null) {
+            loggedInUser.setDescription(description);
+            updated = true;
+        }
+
+        if (avatar != null) {
+            String type = avatar.getContentType();
+            if (type != null && (type.equals("image/png") || type.equals("image/jpeg"))) {
+                loggedInUser.setAvatar(avatar.getBytes());
+                updated = true;
+            } else {
+                throw new IllegalContentTypeException();
+            }
+        }
+
+        if (updated) {
+            userDAO.save(loggedInUser);
+        }
+
+        return Mapper.toDTO(loggedInUser);
     }
 
     /**
@@ -72,6 +108,26 @@ public class UserService extends AbstractService {
      */
     public UserDTO getProfile() throws AuthenticationException {
         return Mapper.toDTO(getLoggedInUser());
+    }
+
+    /**
+     * Retrieves the avatar for the authenticated {@link User}.
+     * @return the avatar represented by a byte array.
+     * @throws AuthenticationException if an authentication error has occurred.
+     */
+    public byte[] getAvatar() throws AuthenticationException {
+        return getLoggedInUser().getAvatar();
+    }
+
+    /**
+     * Retrieves the avatar for the {@link User} given by its id.
+     * @param id the {@link User} id.
+     * @return the avatar represented by a byte array.
+     * @throws NotFoundException if no {@link User} vas found by the given username.
+     */
+    public byte[] getAvatar(String id) throws NotFoundException {
+        User user = userDAO.findById(Mapper.fromStringToUUID(id)).orElseThrow(NotFoundException::new);
+        return user.getAvatar();
     }
 
     /**
