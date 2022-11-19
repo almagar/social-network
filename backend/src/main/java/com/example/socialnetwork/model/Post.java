@@ -30,7 +30,7 @@ public class Post {
 
     @Lob
     @Type(type = "org.hibernate.type.BinaryType")
-    private Blob image;
+    private byte[] image;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
@@ -40,6 +40,13 @@ public class Post {
     public Post(User user, String body) {
         this.user = user;
         this.body = body;
-        this.createdAt = LocalDateTime.now(); // todo: timezone?
+        this.createdAt = LocalDateTime.now();
+    }
+
+    public Post(User user, String body, byte[] image) {
+        this.user = user;
+        this.body = body;
+        this.image = image;
+        this.createdAt = LocalDateTime.now();
     }
 }
