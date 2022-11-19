@@ -20,7 +20,8 @@ public class Mapper {
      */
     public static UserDTO toDTO(User user) {
         String avatarUri = "/user/" + user.getId().toString() + "/avatar";
-        return new UserDTO(user.getId().toString(), user.getUsername(), user.getDescription(), avatarUri);
+        return new UserDTO(user.getId().toString(), user.getUsername(), user.getFirstname(), user.getLastname(),
+                user.getDescription(), avatarUri);
     }
 
     /**
@@ -40,7 +41,8 @@ public class Mapper {
      * @return the converted {@link User}.
      */
     public static User toModel(UserDTO dto) {
-        return new User(fromStringToUUID(dto.getId()), dto.getUsername(), dto.getDescription());
+        return new User(fromStringToUUID(dto.getId()), dto.getUsername(), dto.getFirstname(), dto.getLastname(),
+                dto.getDescription());
     }
 
     /**

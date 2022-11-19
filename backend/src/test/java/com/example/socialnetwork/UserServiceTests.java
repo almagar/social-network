@@ -91,11 +91,13 @@ public class UserServiceTests extends AbstractTests {
 
     protected static User getExampleUser() {
         return new User(UUID.fromString(
-                "70b14f39-178f-4068-86a7-358c7a032d4c"), "email@example.com", "example");
+                "70b14f39-178f-4068-86a7-358c7a032d4c"), "email@example.com", "example",
+                "firstname", "lastname");
     }
 
     protected static User getRandomUser() {
         int randomInt = new Random().nextInt(1000);
-        return new User(UUID.randomUUID(), randomInt + "@example.com", "user" + randomInt);
+        return new User(UUID.randomUUID(), randomInt + "@example.com", "user" + randomInt,
+                "firstname", "lastname");
     }
 }

@@ -35,7 +35,7 @@ public abstract class AbstractTests {
         KeycloakPrincipal principal = (KeycloakPrincipal) authentication.getPrincipal();
         AccessToken token = principal.getKeycloakSecurityContext().getToken();
         UUID id = UUID.fromString(token.getSubject());
-        testUser = new User(id, "email", "username");
+        testUser = new User(id, "email", "username", "firstname", "lastname");
         userService.create(testUser);
     }
 

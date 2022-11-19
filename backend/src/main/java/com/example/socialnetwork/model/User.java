@@ -25,6 +25,12 @@ public class User {
     @Column(unique = true, nullable = false)
     private String username;
 
+    @Column(nullable = false)
+    private String firstname;
+
+    @Column(nullable = false)
+    private String lastname;
+
     private String description;
 
     @Lob
@@ -43,10 +49,12 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Collection<User> followers = new HashSet<>();
 
-    public User(UUID id, String email, String username) {
+    public User(UUID id, String email, String username, String firstname, String lastname) {
         this.id = id;
         this.email = email;
         this.username = username;
+        this.firstname = firstname;
+        this.lastname = lastname;
     }
 
     /**

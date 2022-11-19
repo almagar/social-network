@@ -32,8 +32,10 @@ public class AddUserFilter extends OncePerRequestFilter {
             UUID id = UUID.fromString(principal.toString());
             String email = token.getEmail();
             String username = token.getPreferredUsername();
+            String firstname = token.getGivenName();
+            String lastname = token.getFamilyName();
             if (!userService.exists(id)) {
-                userService.create(new User(id, email, username));
+                userService.create(new User(id, email, username, firstname, lastname));
             }
         }
 

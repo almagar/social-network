@@ -65,6 +65,11 @@ public class UserService extends AbstractService {
         return Mapper.toDTO(user);
     }
 
+    /**
+     * Retrieves the authenticated {@link User}.
+     * @return a {@link UserDTO} for the authenticated {@link User}.
+     * @throws AuthenticationException if an authentication error has occurred.
+     */
     public UserDTO getProfile() throws AuthenticationException {
         return Mapper.toDTO(getLoggedInUser());
     }
