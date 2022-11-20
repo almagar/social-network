@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Predicate;
 
 @Service
 public class ChatRoomService extends AbstractService {
@@ -38,6 +39,7 @@ public class ChatRoomService extends AbstractService {
             throw new RequiredFieldsException();
         User user = getLoggedInUser();
         ChatRoom chatRoom = new ChatRoom(name, user);
+        chatRoom.addUserToRoom(user);
         return Mapper.toDTO(chatRoomDAO.save(chatRoom));
     }
 
@@ -81,6 +83,14 @@ public class ChatRoomService extends AbstractService {
      */
     public List<ChatRoomDTO> getJoined() throws AuthenticationException {
         return chatRoomDAO.findByUsersContainingOrderByName(getLoggedInUser()).stream().map(Mapper::toDTO).toList();
+    }
+
+    public boolean isInRoom(UUID roomId) throws AuthenticationException {
+        return chatRoomDAO
+                .findByUsersContainingOrderByName(getLoggedInUser())
+                .stream()
+                .map(ChatRoom::getId)
+                .anyMatch(Predicate.isEqual(roomId));
     }
 
     /**

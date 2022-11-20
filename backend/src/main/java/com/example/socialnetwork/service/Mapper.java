@@ -1,13 +1,14 @@
 package com.example.socialnetwork.service;
 
-import com.example.socialnetwork.dto.ChatRoomDTO;
-import com.example.socialnetwork.dto.PostDTO;
-import com.example.socialnetwork.dto.UserDTO;
+import com.example.socialnetwork.dto.*;
 import com.example.socialnetwork.model.Post;
 import com.example.socialnetwork.model.User;
 import com.example.socialnetwork.model.chat.ChatRoom;
+import com.example.socialnetwork.model.chat.WSIncomingMessage;
+import com.example.socialnetwork.model.chat.WSOutputMessage;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 /**
@@ -51,6 +52,28 @@ public class Mapper {
     }
 
     /**
+     * Converts a {@link WSIncomingMessage} into a {@link WSIncomingMessageDTO}.
+     * @param wsIncomingMessage the {@link WSIncomingMessage} to be converted.
+     * @return the converted {@link WSOutputMessageDTO}.
+     */
+    public static WSIncomingMessageDTO toDTO(WSIncomingMessage wsIncomingMessage) {
+        return new WSIncomingMessageDTO(wsIncomingMessage.getFromUser(), wsIncomingMessage.getMsg());
+    }
+
+    /**
+     * Converts a {@link WSOutputMessage} into a {@link WSOutputMessageDTO}.
+     * @param wsOutputMessage the {@link WSOutputMessage} to be converted.
+     * @return the converted {@link WSOutputMessageDTO}.
+     */
+    public static WSOutputMessageDTO toDTO(WSOutputMessage wsOutputMessage) {
+        return new WSOutputMessageDTO(
+                toDTO(wsOutputMessage.getFromUser()),
+                wsOutputMessage.getToRoom(),
+                wsOutputMessage.getMsg(),
+                LocalDate.now());
+    }
+
+    /**
      * Converts a {@link UserDTO} into a {@link User}.
      * @param dto the {@link UserDTO} to be converted.
      * @return the converted {@link User}.
@@ -76,6 +99,28 @@ public class Mapper {
      */
     public static ChatRoom toModel(ChatRoomDTO chatRoomDTO) {
         return new ChatRoom(chatRoomDTO.getName(), toModel(chatRoomDTO.getOwner()));
+    }
+
+    /**
+     * Converts a {@link WSIncomingMessageDTO} into a {@link WSIncomingMessage}.
+     * @param wsIncomingMessageDTO the {@link WSIncomingMessageDTO} to be converted.
+     * @return the converted {@link WSIncomingMessage}.
+     */
+    public static WSIncomingMessage toModel(WSIncomingMessageDTO wsIncomingMessageDTO) {
+        return new WSIncomingMessage(wsIncomingMessageDTO.getFromUser(), wsIncomingMessageDTO.getMsg());
+    }
+
+    /**
+     * Converts a {@link WSOutputMessageDTO} into a {@link WSOutputMessage}.
+     * @param wsOutputMessageDTO the {@link WSOutputMessageDTO} to be converted.
+     * @return the converted {@link WSOutputMessage}.
+     */
+    public static WSOutputMessage toModel(WSOutputMessageDTO wsOutputMessageDTO) {
+        return new WSOutputMessage(
+                toModel(wsOutputMessageDTO.getFromUser()),
+                wsOutputMessageDTO.getToRoom(),
+                wsOutputMessageDTO.getMsg(),
+                wsOutputMessageDTO.getSentAt());
     }
 
     /**

@@ -2,18 +2,15 @@ package com.example.socialnetwork.model.chat;
 
 import com.example.socialnetwork.model.User;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
 import java.util.*;
 
 @Entity
 @Data
+@RequiredArgsConstructor
 public class ChatRoom {
-    public ChatRoom(String name, User owner) {
-        this.name = name;
-        this.owner = owner;
-    }
-
     @Id
     @GeneratedValue
     @Column(unique = true, nullable = false)
