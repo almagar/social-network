@@ -111,7 +111,7 @@ public class UserController {
     }
 
     @GetMapping("/following")
-    public ResponseEntity<Map<String, Object>> getFollowingList() {
+    public ResponseEntity<Map<String, Object>> getFollowing() {
         try {
             Collection<UserDTO> friends = userService.getFollowingList();
             return ResponseBuilder.data(friends).build();
@@ -121,7 +121,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}/following")
-    public ResponseEntity<Map<String, Object>> getFollowingList(@PathVariable String id) {
+    public ResponseEntity<Map<String, Object>> getFollowing(@PathVariable String id) {
         try {
             Collection<UserDTO> friends = userService.getFollowingList(id);
             return ResponseBuilder.data(friends).build();

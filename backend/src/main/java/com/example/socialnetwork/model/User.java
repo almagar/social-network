@@ -1,18 +1,19 @@
 package com.example.socialnetwork.model;
 
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import java.sql.Blob;
 import java.util.*;
 
 /**
  * User entity that is also mapped to a database.
  */
 @Entity(name = "users")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 public class User {
     @Id
@@ -71,5 +72,17 @@ public class User {
      */
     public void unfollow(User user) {
         following.remove(user);
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", username='" + username + '\'' +
+                ", firstname='" + firstname + '\'' +
+                ", lastname='" + lastname + '\'' +
+                ", description='" + description + '\'' +
+                '}';
     }
 }

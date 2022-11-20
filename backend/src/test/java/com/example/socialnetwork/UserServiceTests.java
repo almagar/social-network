@@ -79,7 +79,7 @@ public class UserServiceTests extends AbstractTests {
     }
 
     @Test
-    public void testFollowUnFollowAndGetFollowingList() {
+    public void testFollow() {
         User tmpUser = getExampleUser();
         userService.followUser(tmpUser.getId().toString());
         Assertions.assertEquals(List.of(Mapper.toDTO(tmpUser)), userService.getFollowingList());
