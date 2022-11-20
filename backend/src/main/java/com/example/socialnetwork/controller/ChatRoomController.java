@@ -44,7 +44,7 @@ public class ChatRoomController {
         }
     }
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, Object>> create(@RequestBody String name) {
         try {
             ChatRoomDTO chatRoom = chatRoomService.create(name);
