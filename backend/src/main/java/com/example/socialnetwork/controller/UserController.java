@@ -113,8 +113,8 @@ public class UserController {
     @GetMapping("/following")
     public ResponseEntity<Map<String, Object>> getFollowing() {
         try {
-            Collection<UserDTO> friends = userService.getFollowingList();
-            return ResponseBuilder.data(friends).build();
+            Collection<UserDTO> following = userService.getFollowing();
+            return ResponseBuilder.data(following).build();
         } catch (AuthenticationException ex) {
             return ResponseBuilder.error(Error.AUTHENTICATION_ERROR).build();
         }
@@ -123,8 +123,28 @@ public class UserController {
     @GetMapping("/{id}/following")
     public ResponseEntity<Map<String, Object>> getFollowing(@PathVariable String id) {
         try {
-            Collection<UserDTO> friends = userService.getFollowingList(id);
-            return ResponseBuilder.data(friends).build();
+            Collection<UserDTO> following = userService.getFollowing(id);
+            return ResponseBuilder.data(following).build();
+        } catch (NotFoundException ex) {
+            return ResponseBuilder.error(Error.USER_NOT_FOUND).build();
+        }
+    }
+
+    @GetMapping("/followers")
+    public ResponseEntity<Map<String, Object>> getFollowers() {
+        try {
+            Collection<UserDTO> followers = userService.getFollowers();
+            return ResponseBuilder.data(followers).build();
+        } catch (AuthenticationException ex) {
+            return ResponseBuilder.error(Error.AUTHENTICATION_ERROR).build();
+        }
+    }
+
+    @GetMapping("/{id}/followers")
+    public ResponseEntity<Map<String, Object>> getFollowers(@PathVariable String id) {
+        try {
+            Collection<UserDTO> followers = userService.getFollowers(id);
+            return ResponseBuilder.data(followers).build();
         } catch (NotFoundException ex) {
             return ResponseBuilder.error(Error.USER_NOT_FOUND).build();
         }

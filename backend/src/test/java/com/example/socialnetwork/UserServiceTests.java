@@ -82,9 +82,9 @@ public class UserServiceTests extends AbstractTests {
     public void testFollow() {
         User tmpUser = getExampleUser();
         userService.followUser(tmpUser.getId().toString());
-        Assertions.assertEquals(List.of(Mapper.toDTO(tmpUser)), userService.getFollowingList());
+        Assertions.assertEquals(List.of(Mapper.toDTO(tmpUser)), userService.getFollowing());
         Assertions.assertEquals(List.of(Mapper.toDTO(tmpUser)),
-                userService.getFollowingList(getLoggedInUser().getId().toString()));
+                userService.getFollowing(getLoggedInUser().getId().toString()));
     }
 
     @Test
@@ -92,7 +92,7 @@ public class UserServiceTests extends AbstractTests {
         User tmpUser = getExampleUser();
         userService.followUser(tmpUser.getId().toString());
         userService.unFollowUser(tmpUser.getId().toString());
-        Assertions.assertEquals(Collections.emptyList(), userService.getFollowingList());
+        Assertions.assertEquals(Collections.emptyList(), userService.getFollowing());
     }
 
     @Test

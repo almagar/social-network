@@ -178,23 +178,44 @@ public class UserService extends AbstractService {
     }
 
     /**
-     * Retrieves the authenticated {@link User}'s following list.
+     * Retrieves the authenticated {@link User}'s followings.
      * @return a {@link Collection} of {@link UserDTO}s.
      * @throws AuthenticationException if an authentication error has occurred.
      */
-    public Collection<UserDTO> getFollowingList() throws AuthenticationException {
+    public Collection<UserDTO> getFollowing() throws AuthenticationException {
         User loggedInUser = getLoggedInUser();
         return loggedInUser.getFollowing().stream().map(Mapper::toDTO).toList();
     }
 
     /**
-     * Retrieves the following list of the {@link User} given by its id.
+     * Retrieves the followings of the {@link User} given by its id.
      * @param id the {@link User} id.
      * @return a {@link Collection} of {@link UserDTO}s.
      * @throws NotFoundException if no {@link User} was found with the given id.
      */
-    public Collection<UserDTO> getFollowingList(String id) throws NotFoundException {
+    public Collection<UserDTO> getFollowing(String id) throws NotFoundException {
         User user = userDAO.findById(Mapper.fromStringToUUID(id)).orElseThrow(NotFoundException::new);
         return user.getFollowing().stream().map(Mapper::toDTO).toList();
+    }
+
+    /**
+     * Retrieves the authenticated {@link User}'s followers.
+     * @return a {@link Collection} of {@link UserDTO}s.
+     * @throws AuthenticationException if an authentication error has occurred.
+     */
+    public Collection<UserDTO> getFollowers() throws AuthenticationException {
+        User loggedInUser = getLoggedInUser();
+        return loggedInUser.getFollowers().stream().map(Mapper::toDTO).toList();
+    }
+
+    /**
+     * Retrieves the followers of the {@link User} given by its id.
+     * @param id the {@link User} id.
+     * @return a {@link Collection} of {@link UserDTO}s.
+     * @throws NotFoundException if no {@link User} was found with the given id.
+     */
+    public Collection<UserDTO> getFollowers(String id) throws NotFoundException {
+        User user = userDAO.findById(Mapper.fromStringToUUID(id)).orElseThrow(NotFoundException::new);
+        return user.getFollowers().stream().map(Mapper::toDTO).toList();
     }
 }
