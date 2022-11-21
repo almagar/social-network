@@ -1,5 +1,6 @@
-import { Grid, GridItem } from '@chakra-ui/react'
-import { Link, Outlet } from "react-router-dom";
+import { Grid, GridItem, LinkBox, VStack, Text } from '@chakra-ui/react'
+import { NavLink, Outlet } from "react-router-dom";
+import RoomList from './RoomList';
 
 function Layout(props) {
     return (
@@ -11,15 +12,36 @@ function Layout(props) {
             color='blackAlpha.700'
             fontWeight='bold'
         >
-            <GridItem pl='2' bg='orange.300' area={'nav'}>
-                Nav
+            <GridItem pl='2' area={'nav'} py="50px">
+                <VStack spacing={4} justifyContent="left">
+                    <LinkBox justifySelf="left" as={NavLink} to="/profile">Profile</LinkBox>
+                    <LinkBox justifySelf="left" as={NavLink} to="/chat">Chat</LinkBox>
+                </VStack>
             </GridItem>
-            <GridItem pl='2' bg='green.300' area={'main'}>
-                <Link to="/profile">Profile</Link>
+            <GridItem
+                pl='2'
+                area={'main'}
+                py="50px"
+                borderLeft="1px solid lightgray"
+                borderRight="1px solid lightgray"
+            >
                 <Outlet />
             </GridItem>
-            <GridItem pl='2' bg='blue.300' area={'side'}>
-                Side
+            <GridItem
+                pl='2'
+                area={'side'}
+                py="50px"
+                justifyContent="right"
+                textAlign="right"
+            >
+                <VStack
+                    spacing={4}
+                    justifyContent="right"
+                    textAlign="right"
+                >
+                    <Text>Side</Text>
+                    <RoomList />
+                </VStack>
             </GridItem>
         </Grid>
     )
