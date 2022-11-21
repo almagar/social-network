@@ -15,4 +15,6 @@ public class UserDTO {
     private String lastname;
     private String description;
     private String avatarUri;
+    private int nrOfFollowing;
+    private int nrOfFollowers;
 }

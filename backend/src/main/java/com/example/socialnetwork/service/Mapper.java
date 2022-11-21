@@ -21,7 +21,7 @@ public class Mapper {
     public static UserDTO toDTO(User user) {
         String avatarUri = "/user/" + user.getId().toString() + "/avatar";
         return new UserDTO(user.getId().toString(), user.getUsername(), user.getFirstname(), user.getLastname(),
-                user.getDescription(), avatarUri);
+                user.getDescription(), avatarUri, user.getFollowing().size(), user.getFollowers().size());
     }
 
     /**
