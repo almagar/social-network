@@ -22,7 +22,7 @@ public class Mapper {
      * @return the converted {@link UserDTO}.
      */
     public static UserDTO toDTO(User user) {
-        String avatarUri = "/user/" + user.getId().toString() + "/avatar";
+        String avatarUri = user.getAvatar() != null && user.getAvatar().length > 0 ? "/user/" + user.getId().toString() + "/avatar" : null;
         return new UserDTO(user.getId().toString(), user.getUsername(), user.getFirstname(), user.getLastname(),
                 user.getDescription(), avatarUri, user.getFollowing().size(), user.getFollowers().size());
     }
@@ -33,7 +33,7 @@ public class Mapper {
      * @return the converted {@link UserDTO}.
      */
     public static PostDTO toDTO(Post post) {
-        String imageUri = "/post/" + post.getId().toString() + "/image";
+        String imageUri = post.getImage() != null && post.getImage().length > 0 ? "/post/" + post.getId().toString() + "/image" : null;
         return new PostDTO(post.getId().toString(), toDTO(post.getUser()), post.getBody(), imageUri,
                 post.getCreatedAt(), post.getUpdatedAt());
     }
@@ -57,7 +57,7 @@ public class Mapper {
      * @return the converted {@link WSOutputMessageDTO}.
      */
     public static WSIncomingMessageDTO toDTO(WSIncomingMessage wsIncomingMessage) {
-        return new WSIncomingMessageDTO(wsIncomingMessage.getFromUser(), wsIncomingMessage.getMsg());
+        return new WSIncomingMessageDTO(wsIncomingMessage.getFromUser(), wsIncomingMessage.getMsg(), wsIncomingMessage.getB64Image());
     }
 
     /**
@@ -70,7 +70,9 @@ public class Mapper {
                 toDTO(wsOutputMessage.getFromUser()),
                 wsOutputMessage.getToRoom(),
                 wsOutputMessage.getMsg(),
-                LocalDate.now());
+                LocalDate.now(),
+                wsOutputMessage.getId().toString(),
+                wsOutputMessage.getB64Image());
     }
 
     /**

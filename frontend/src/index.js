@@ -40,8 +40,8 @@ keycloak.init({
     localStorage.setItem("sn-token", keycloak.token);
     localStorage.setItem("sn-refresh-token", keycloak.refreshToken);
 
-    setTimeout(() => {
-      keycloak.updateToken(70).then(refreshed => {
+    setInterval(() => {
+      keycloak.updateToken(130).then(refreshed => {
         if (refreshed) {
           console.debug("Token refreshed" + refreshed);
         } else {

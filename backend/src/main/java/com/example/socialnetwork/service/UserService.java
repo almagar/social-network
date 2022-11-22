@@ -2,6 +2,7 @@ package com.example.socialnetwork.service;
 
 import com.example.socialnetwork.dao.UserDAO;
 import com.example.socialnetwork.dto.UserDTO;
+import com.example.socialnetwork.dto.WSIncomingMessageDTO;
 import com.example.socialnetwork.model.User;
 import com.example.socialnetwork.model.exception.AuthenticationException;
 import com.example.socialnetwork.model.exception.IllegalContentTypeException;
@@ -229,5 +230,9 @@ public class UserService extends AbstractService {
     public Boolean isFollowing(String id) throws NotFoundException, AuthenticationException {
         User user = userDAO.findById(Mapper.fromStringToUUID(id)).orElseThrow(NotFoundException::new);
         return user.equals(getLoggedInUser()) ? null : getLoggedInUser().getFollowing().contains(user);
+    }
+
+    public UserDTO getById(UUID id) throws NotFoundException {
+        return Mapper.toDTO(userDAO.findById(id).orElseThrow(NotFoundException::new));
     }
 }

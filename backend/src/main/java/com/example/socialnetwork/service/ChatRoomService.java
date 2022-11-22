@@ -77,6 +77,20 @@ public class ChatRoomService extends AbstractService {
     }
 
     /**
+     * Get chatroom by id.
+     * @param id the {@link UUID} of the room to get.
+     * @return the found {@link ChatRoomDTO}.
+     * @throws NotFoundException if the chatroom is not found.
+     * @throws AuthenticationException if the user is not logged in.
+     * @throws AuthorizationException if the user trying to get the chatroom is not allowed to.
+     */
+    public ChatRoomDTO getById(String id) throws NotFoundException, AuthenticationException, AuthorizationException {
+        if (!isInRoom(Mapper.fromStringToUUID(id)))
+            throw new AuthorizationException();
+        return Mapper.toDTO(chatRoomDAO.findById(Mapper.fromStringToUUID(id)).orElseThrow(NotFoundException::new));
+    }
+
+    /**
      * Get chatrooms that the user is in.
      * @return a {@link List<ChatRoomDTO>} of the chatrooms that the user is in.
      * @throws AuthenticationException if the user is not logged in.
@@ -85,9 +99,40 @@ public class ChatRoomService extends AbstractService {
         return chatRoomDAO.findByUsersContainingOrderByName(getLoggedInUser()).stream().map(Mapper::toDTO).toList();
     }
 
+    /**
+     * Check if the logged-in user is in the room specified by roomId.
+     * @param roomId the id of the room.
+     * @return true if the user is in the room, false otherwise.
+     * @throws AuthenticationException if the user is not logged in.
+     */
     public boolean isInRoom(UUID roomId) throws AuthenticationException {
+        User user = getLoggedInUser();
+        System.out.println("user:");
+        System.out.println(user.getId());
+        System.out.println(user.getUsername());
+        System.out.println(user.getChatRooms());
         return chatRoomDAO
                 .findByUsersContainingOrderByName(getLoggedInUser())
+                .stream()
+                .map(ChatRoom::getId)
+                .anyMatch(Predicate.isEqual(roomId));
+    }
+
+    /**
+     * Check if the user specified by userId is in the room specified by roomId.
+     * @param roomId the id of the room.
+     * @param userId the id of the user.
+     * @return true if the user is in the room, false otherwise.
+     * @throws NotFoundException if either the roomId or the userId is not found.
+     */
+    public boolean isInRoom(UUID roomId, UUID userId) throws NotFoundException {
+        User user = userDAO.findById(userId).orElseThrow(NotFoundException::new);
+        System.out.println("user:");
+        System.out.println(user.getId());
+        System.out.println(user.getUsername());
+        System.out.println(user.getChatRooms());
+        return chatRoomDAO
+                .findByUsersContainingOrderByName(user)
                 .stream()
                 .map(ChatRoom::getId)
                 .anyMatch(Predicate.isEqual(roomId));
@@ -105,7 +150,7 @@ public class ChatRoomService extends AbstractService {
         User loggedInUser = getLoggedInUser();
         ChatRoom chatRoom = chatRoomDAO.findById(chatRoomId).orElseThrow(NotFoundException::new);
         User user = userDAO.findById(userId).orElseThrow(NotFoundException::new);
-        if (!loggedInUser.getId().equals(chatRoom.getId()))
+        if (!loggedInUser.getId().equals(chatRoom.getOwner().getId()))
             throw new AuthorizationException();
         chatRoom.addUserToRoom(user);
         return Mapper.toDTO(chatRoomDAO.save(chatRoom));

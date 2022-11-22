@@ -15,7 +15,7 @@ function Search() {
     const getSearchResults = () => {
         axios.get(`/user`, { params: { username: searchQuery }})
             .then(res => {
-                if (res.data != "") {
+                if (res.data !== "") {
                     setSearchRes(res.data.data);
                 }
             })
