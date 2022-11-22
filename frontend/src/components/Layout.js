@@ -14,6 +14,7 @@ function Layout(props) {
         >
             <GridItem pl='2' area={'nav'} py="50px">
                 <VStack spacing={4} justifyContent="left">
+                    <LinkBox justifySelf="left" as={NavLink} to="/search">Search</LinkBox>
                     <LinkBox justifySelf="left" as={NavLink} to="/profile">Profile</LinkBox>
                     <LinkBox justifySelf="left" as={NavLink} to="/chat">Chat</LinkBox>
                 </VStack>

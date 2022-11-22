@@ -3,6 +3,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Layout from "./components/Layout";
 import Posts from "./components/Posts";
 import Profile from "./components/Profile";
+import Search from "./components/Search";
 import getPostsFromFollowing from "./loaders/posts";
 import getProfileData from "./loaders/profile";
 
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
         path: "profile",
         element: <Profile />,
         loader: getProfileData,
+      },
+      {
+        path: "search",
+        element: <Search />,
       },
     ],
   },
