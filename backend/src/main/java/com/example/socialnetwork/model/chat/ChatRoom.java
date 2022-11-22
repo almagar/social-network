@@ -2,6 +2,7 @@ package com.example.socialnetwork.model.chat;
 
 import com.example.socialnetwork.model.User;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
@@ -9,7 +10,7 @@ import java.util.*;
 
 @Entity
 @Data
-@RequiredArgsConstructor
+@NoArgsConstructor
 public class ChatRoom {
     @Id
     @GeneratedValue
@@ -17,21 +18,30 @@ public class ChatRoom {
     private UUID id;
 
     @Column(nullable = false)
-    private final String name;
+    private String name;
 
     @ManyToOne(targetEntity = User.class)
     @JoinColumn(nullable = false, updatable = false)
-    private final User owner;
+    private User owner;
 
-    @ElementCollection
-    @Column(nullable = false)
-    private Set<User> users = new HashSet<>();
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "rooms_users", joinColumns = @JoinColumn(name = "room_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private List<User> users = new ArrayList<>();
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @Column
     private List<WSOutputMessage> messages = new ArrayList<>();
 
+    public ChatRoom(String name, User owner) {
+        this.name = name;
+        this.owner = owner;
+    }
+
     public void addUserToRoom(User user) {
         this.users.add(user);
+    }
+
+    public void addMessage(WSOutputMessage message) {
+        this.messages.add(message);
     }
 }

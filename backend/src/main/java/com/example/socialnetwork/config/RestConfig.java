@@ -4,16 +4,19 @@ import com.example.socialnetwork.security.filter.AddUserFilter;
 import com.example.socialnetwork.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.keycloak.adapters.springsecurity.KeycloakConfiguration;
+import org.keycloak.adapters.springsecurity.account.SimpleKeycloakAccount;
 import org.keycloak.adapters.springsecurity.authentication.KeycloakAuthenticationProvider;
 import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurerAdapter;
 import org.keycloak.adapters.springsecurity.filter.KeycloakAuthenticatedActionsFilter;
+import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.session.SessionRegistryImpl;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.web.cors.CorsConfiguration;
@@ -50,13 +53,10 @@ public class RestConfig extends KeycloakWebSecurityConfigurerAdapter {
                         .mvcMatchers("/chat/**").permitAll()
                         .anyRequest().authenticated())
                 .csrf().disable()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
                 .addFilterAfter(new AddUserFilter(userService), KeycloakAuthenticatedActionsFilter.class)
                 .cors(Customizer.withDefaults())
                 .exceptionHandling()
-                .authenticationEntryPoint(authenticationEntryPoint());
+                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
     }
 
     @Bean

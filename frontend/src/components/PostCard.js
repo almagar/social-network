@@ -1,29 +1,33 @@
-import { Avatar, Box, Text, Card, CardHeader, CardFooter, CardBody, Flex, Heading, Button, IconButton, Image } from "@chakra-ui/react";
+import { Avatar, Box, Text, Card, CardHeader, CardFooter, CardBody, Flex, LinkBox, Button, IconButton, Image } from "@chakra-ui/react";
 import { AddIcon, ChatIcon, RepeatIcon, EditIcon } from "@chakra-ui/icons";
+import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { Buffer } from "buffer";
+
 import axios from "../axiosInstance";
+import ImageFromData from "./ImageFromData";
+import AvatarFromData from "./AvatarFromData";
 
 function PostCard({ post }) {
     const [image, setImage] = useState(null);
 
     const getPostImage = async uri => {
-        axios.get(uri)
+        console.log("getting image: " + uri)
+        axios.get(uri, { responseType: "arraybuffer" })
             .then(res => {
-                console.log("image res")
-                console.log(res)
-                console.log("image res.data")
-                console.log(res.data)
-                if (res.data != "") {
-                    setImage(res.data);
+                console.log("got image")
+                if (res.data != null) {
+                    console.log(res)
+                    setImage(res);
                 }
             })
             .catch(err => {
+                console.log("didn't get post")
                 console.log(err);
             })
     }
 
     useEffect(() => {
-        console.log(post.imageUri);
         getPostImage(post.imageUri);
     }, [post])
 
@@ -32,10 +36,10 @@ function PostCard({ post }) {
             <CardHeader>
                 <Flex spacing='4'>
                     <Flex flex='1' gap='4' alignItems='center' flexWrap='wrap'>
-                        <Avatar name={`${post.creator.username}`}/>
+                        <AvatarFromData name={`${post.creator.username}`} avatar={post.creator.avatarUri} />
 
                         <Box>
-                            <Heading size='sm'>{post.creator.username}</Heading>
+                            <LinkBox as={Link} to={`/profile/${post.creator.username}`}>{post.creator.username}</LinkBox>
                         </Box>
                     </Flex>
                     <IconButton
@@ -50,10 +54,10 @@ function PostCard({ post }) {
                 <Text fontWeight={400}>{post.body}</Text>
             </CardBody>
             {
-                image &&
-                <Image
+                image != null &&
+                <ImageFromData
                     objectFit="cover"
-                    src={`data:image/png;base64,${image}`} //Buffer.from(str, 'base64') andbuf.toString('base64')
+                    image={image}
                     alt="post image"
                     fallbackSrc="https://via.placeholder.com/150"
                 />

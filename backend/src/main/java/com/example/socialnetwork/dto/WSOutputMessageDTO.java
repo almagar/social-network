@@ -12,4 +12,6 @@ public class WSOutputMessageDTO {
     private String toRoom;
     private String msg;
     private LocalDate sentAt;
+    private String id;
+    private String b64Image;
 }

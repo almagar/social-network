@@ -53,7 +53,7 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Collection<User> followers = new HashSet<>();
 
-    @ElementCollection
+    @ManyToMany(mappedBy = "users", fetch = FetchType.EAGER)
     private Set<ChatRoom> chatRooms;
 
     public User(UUID id, String email, String username, String firstname, String lastname) {

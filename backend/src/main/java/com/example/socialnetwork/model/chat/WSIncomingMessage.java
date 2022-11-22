@@ -8,4 +8,5 @@ import lombok.RequiredArgsConstructor;
 public class WSIncomingMessage {
     private final String fromUser;
     private final String msg;
+    private String b64Image;
 }

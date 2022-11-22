@@ -66,16 +66,6 @@ public class UserController {
         }
     }
 
-    @GetMapping("/{username}")
-    public ResponseEntity<Map<String, Object>> getByUsername(@PathVariable String username) {
-        try {
-            UserDTO user = userService.getByUsername(username);
-            return ResponseBuilder.data(user).build();
-        } catch (NotFoundException ex) {
-            return ResponseBuilder.error(Error.USER_NOT_FOUND).build();
-        }
-    }
-
     @GetMapping(params = {"username"})
     public ResponseEntity<Map<String, Object>> searchByUsername(@RequestParam String username) {
         List<UserDTO> users = userService.searchByUsername(username);
@@ -158,6 +148,16 @@ public class UserController {
             return ResponseBuilder.error(Error.USER_NOT_FOUND).build();
         } catch (AuthenticationException ex) {
             return ResponseBuilder.error(Error.AUTHENTICATION_ERROR).build();
+        }
+    }
+
+    @GetMapping("/{username}")
+    public ResponseEntity<Map<String, Object>> getByUsername(@PathVariable String username) {
+        try {
+            UserDTO user = userService.getByUsername(username);
+            return ResponseBuilder.data(user).build();
+        } catch (NotFoundException ex) {
+            return ResponseBuilder.error(Error.USER_NOT_FOUND).build();
         }
     }
 }

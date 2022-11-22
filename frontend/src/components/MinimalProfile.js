@@ -1,17 +1,19 @@
-import { Card, CardHeader, CardBody, CardFooter, Text, Avatar, AvatarBadge, Button } from '@chakra-ui/react'
+import { Card, CardHeader, CardBody, CardFooter, Text, Avatar, AvatarBadge, Button, LinkOverlay, LinkBox } from '@chakra-ui/react'
 import { useEffect, useState, onClick } from "react";
+import { Link } from 'react-router-dom';
 
 import axios from "../axiosInstance"
+import AvatarFromData from './AvatarFromData';
 
 function MinimalProfile({ user }) {
     const [avatar, setAvatar] = useState(null);
     const [isFollowing, setIsFollowing] = useState(null);
 
     const getAvatar = async uri => {
-        axios.get(uri)
+        axios.get(uri, { responseType: "arraybuffer" })
             .then(res => {
                 if (res.data != "") {
-                    setAvatar(res.data);
+                    setAvatar(res);
                 }
             })
             .catch(err => {
@@ -54,8 +56,8 @@ function MinimalProfile({ user }) {
     return (
         <Card width="90%">
             <CardBody display="flex" alignItems="center">
-                <Avatar name={user.username} src={`data:image/png;base64,${avatar}`} />
-                <Text ml="10px">{user.username}</Text>
+                <AvatarFromData name={user.username} avatar={avatar} />
+                <LinkBox as={Link} to={`/profile/${user.username}`} ml="10px">{user.username}</LinkBox>
                 {
                     isFollowing != null ?
                         isFollowing ?

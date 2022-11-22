@@ -1,8 +1,10 @@
 import { Grid, GridItem, LinkBox, VStack, Text } from '@chakra-ui/react'
-import { NavLink, Outlet } from "react-router-dom";
-import RoomList from './RoomList';
+import { NavLink, Outlet, useLoaderData } from "react-router-dom";
+import Sidebar from './Sidebar';
 
 function Layout(props) {
+    const data = useLoaderData();
+
     return (
         <Grid
             templateAreas={`"nav main side"`}
@@ -12,38 +14,31 @@ function Layout(props) {
             color='blackAlpha.700'
             fontWeight='bold'
         >
-            <GridItem pl='2' area={'nav'} py="50px">
-                <VStack spacing={4} justifyContent="left">
-                    <LinkBox justifySelf="left" as={NavLink} to="/search">Search</LinkBox>
+            <GridItem px='2' area={'nav'} py="50px">
+                <VStack spacing={4} width="80%" alignItems="start">
+                    <LinkBox justifySelf="left" as={NavLink} to="/">Home</LinkBox>
                     <LinkBox justifySelf="left" as={NavLink} to="/profile">Profile</LinkBox>
-                    <LinkBox justifySelf="left" as={NavLink} to="/chat">Chat</LinkBox>
+                    <LinkBox justifySelf="left" as={NavLink} to="/search">Search</LinkBox>
                 </VStack>
             </GridItem>
             <GridItem
-                pl='2'
-                padding-left="0px"
+                px='2'
                 area={'main'}
-                py="50px"
+                pt="50px"
+                pb="10px"
                 borderLeft="1px solid lightgray"
                 borderRight="1px solid lightgray"
             >
-                <Outlet />
+                <Outlet context={{ user: data.data }} />
             </GridItem>
             <GridItem
-                pl='2'
+                px='5'
                 area={'side'}
                 py="50px"
                 justifyContent="right"
                 textAlign="right"
             >
-                <VStack
-                    spacing={4}
-                    justifyContent="right"
-                    textAlign="right"
-                >
-                    <Text>Side</Text>
-                    <RoomList />
-                </VStack>
+                <Sidebar />
             </GridItem>
         </Grid>
     )
