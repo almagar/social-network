@@ -38,7 +38,7 @@ public class UserController {
 
     @PutMapping(path = "/profile", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Map<String, Object>> update(
-            @RequestParam(required = false) String description, @RequestParam(required = false)MultipartFile avatar) {
+            @RequestParam(required = false) String description, @RequestParam(required = false) MultipartFile avatar) {
         try {
             return ResponseBuilder.data(userService.update(description, avatar)).build();
         } catch (AuthenticationException ex) {
