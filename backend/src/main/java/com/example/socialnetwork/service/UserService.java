@@ -218,4 +218,16 @@ public class UserService extends AbstractService {
         User user = userDAO.findById(Mapper.fromStringToUUID(id)).orElseThrow(NotFoundException::new);
         return user.getFollowers().stream().map(Mapper::toDTO).toList();
     }
+
+    /**
+     * Validates whether the authenticated {@link User} is following the {@link User} given by its id.
+     * @param id the {@link User} id.
+     * @return true if following, null if the given id belong to the authenticated {@link User}.
+     * @throws NotFoundException if no {@link User} was found with the given id.
+     * @throws AuthenticationException if an authentication error has occurred.
+     */
+    public Boolean isFollowing(String id) throws NotFoundException, AuthenticationException {
+        User user = userDAO.findById(Mapper.fromStringToUUID(id)).orElseThrow(NotFoundException::new);
+        return user.equals(getLoggedInUser()) ? null : getLoggedInUser().getFollowing().contains(user);
+    }
 }

@@ -68,7 +68,6 @@ public class UserController {
 
     @GetMapping("/{username}")
     public ResponseEntity<Map<String, Object>> getByUsername(@PathVariable String username) {
-        System.out.println("here---");
         try {
             UserDTO user = userService.getByUsername(username);
             return ResponseBuilder.data(user).build();
@@ -83,7 +82,7 @@ public class UserController {
         return ResponseBuilder.data(users).build();
     }
 
-    @PutMapping("/follow/{id}")
+    @PutMapping("/{id}/follow")
     public ResponseEntity<Map<String, Object>> followUser(@PathVariable String id) {
         try {
             userService.followUser(id);
@@ -97,7 +96,7 @@ public class UserController {
         }
     }
 
-    @PutMapping("/unfollow/{id}")
+    @PutMapping("/{id}/unfollow")
     public ResponseEntity<Map<String, Object>> unfollowUser(@PathVariable String id) {
         try {
             userService.unFollowUser(id);
@@ -148,6 +147,17 @@ public class UserController {
             return ResponseBuilder.data(followers).build();
         } catch (NotFoundException ex) {
             return ResponseBuilder.error(Error.USER_NOT_FOUND).build();
+        }
+    }
+
+    @GetMapping("/{id}/is-following")
+    public ResponseEntity<Map<String, Object>> isFollowing(@PathVariable String id) {
+        try {
+            return ResponseBuilder.data(userService.isFollowing(id)).build();
+        } catch (NotFoundException ex) {
+            return ResponseBuilder.error(Error.USER_NOT_FOUND).build();
+        } catch (AuthenticationException ex) {
+            return ResponseBuilder.error(Error.AUTHENTICATION_ERROR).build();
         }
     }
 }
