@@ -19,6 +19,8 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Service class for the {@link Post} entity.
@@ -115,8 +117,12 @@ public class PostService extends AbstractService {
      * @throws AuthenticationException if an authentication error has occurred.
      */
     public Collection<PostDTO> getPostsByFollowing(int page, int pageSize) throws AuthenticationException {
-        Page<Post> posts = postDAO.getAllByUsers(getLoggedInUser().getFollowing(),
-                PageRequest.of(page, pageSize, Sort.by("created_at")));
+        User loggedInUser = getLoggedInUser();
+        Set<User> users = loggedInUser.getFollowing();
+        users.add(loggedInUser);
+        Page<Post> posts = postDAO.getAllByUsers(users,
+                // todo: asc and change in frontend
+                PageRequest.of(page, pageSize, Sort.by("created_at").descending()));
         return posts.stream().map(Mapper::toDTO).toList();
     }
 

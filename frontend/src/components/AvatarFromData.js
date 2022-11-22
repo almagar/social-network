@@ -6,7 +6,7 @@ function AvatarFromData(props) {
     return (
         <Avatar
             {...props}
-            src={avatar == null ? "" : `data:${avatar.headers["content-type"]};base64,${Buffer.from(avatar.data, "binary").toString("base64")}`}
+            src={avatar == null || avatar.headers == null ? "" : `data:${avatar.headers["content-type"]};base64,${Buffer.from(avatar.data, "binary").toString("base64")}`}
         />
     )
 }

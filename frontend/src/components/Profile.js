@@ -92,6 +92,7 @@ function Profile() {
                             resize="vertical"
                             mb={3}
                         />
+                        <Text fontWeight="normal" fontSize="smaller">Change avatar</Text>
                         <Input
                             type="file"
                             ref={avatarRef}
