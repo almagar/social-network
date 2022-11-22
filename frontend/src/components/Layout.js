@@ -21,6 +21,7 @@ function Layout(props) {
             </GridItem>
             <GridItem
                 pl='2'
+                padding-left="0px"
                 area={'main'}
                 py="50px"
                 borderLeft="1px solid lightgray"

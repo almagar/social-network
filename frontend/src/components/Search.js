@@ -22,29 +22,25 @@ function Search() {
     }
 
     return (
-        <div>
-            <div>
-                <Input
-                    placeholder='Search'
-                    value={searchQuery}
-                    onChange={e => {
-                        setSearchQuery(e.currentTarget.value);
-                        getSearchResults();
-                    }}
-                />
-            </div>
-
-            <VStack spacing={8}>
-                {
-                    searchRes != null ?
-                        searchRes.length === 0 ?
+        <VStack spacing={8}>
+            <Input
+                placeholder='Search'
+                value={searchQuery}
+                width="90%"
+                onChange={e => {
+                    setSearchQuery(e.currentTarget.value);
+                    getSearchResults();
+                }}
+            />
+            {
+                searchRes != null ?
+                    searchRes.length === 0 ?
                         <Text>No result</Text>
-                        : searchRes.map(user => <MinimalProfile key={user.id} user={user} />)
+                        : searchRes.map(user => <MinimalProfile key={user.id} user={user}/>)
                     : null
-                }
+            }
 
-            </VStack>
-        </div>
+        </VStack>
     )
 }
 

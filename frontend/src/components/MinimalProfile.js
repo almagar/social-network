@@ -52,7 +52,7 @@ function MinimalProfile({ user }) {
     }, [user])
 
     return (
-        <Card width="70%">
+        <Card width="90%">
             <CardBody display="flex" alignItems="center">
                 <Avatar name={user.username} src={`data:image/png;base64,${avatar}`} />
                 <Text ml="10px">{user.username}</Text>
