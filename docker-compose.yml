@@ -61,6 +61,7 @@ services:
       - POSTGRES_PASSWORD=$KC_DB_PASSWORD
       - POSTGRES_DATABASE=$KC_DB_SCHEMA
       - KEYCLOAK_IMPORT=/opt/jboss/keycloak/data/import/socialnetwork.json
+      - PROXY_ADDRESS_FORWARDING=true
     volumes:
       - ./keycloak/socialnetwork.json:/opt/jboss/keycloak/data/import/socialnetwork.json
 

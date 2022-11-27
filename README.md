@@ -10,14 +10,28 @@ Requires docker and docker compose
 POSTGRES_USER=socialnetworkuser
 POSTGRES_PASSWORD=123456
 POSTGRES_DATABASE=socialnetwork
+KEYCLOAK_ADMIN=admin
+KEYCLOAK_ADMIN_PASSWORD=password
+KC_DB=postgres
+KC_DB_USERNAME=keycloak
+KC_DB_PASSWORD=password123
+KC_DB_URL=jdbc:postgresql://keycloakdb:5432/keycloak
+KC_HOSTNAME=keycloakdb
+KC_PORT=5432
+KC_DB_SCHEMA=keycloak
 ```
 
-2. Create a `.env.development` file in `frontend/` with the following environment variables
+2. Create a `.env.production` file in `frontend/` with the following environment variables
 ```
-REACT_APP_BASE_URL=http://backend:8080
+REACT_APP_BASE_URL=http://localhost:8080/api
+REACT_APP_KEYCLOAK_URL=http://localhost:8080
+REACT_APP_REDIRECT_URI=http://localhost:8080
 ```
 
 3. Run `docker compose up --build -d`
+
+The app should then be available at `localhost:8080`
+
 
 ### Development
 
@@ -28,6 +42,15 @@ REACT_APP_BASE_URL=http://backend:8080
 POSTGRES_USER=socialnetworkuser
 POSTGRES_PASSWORD=123456
 POSTGRES_DATABASE=socialnetwork
+KEYCLOAK_ADMIN=admin
+KEYCLOAK_ADMIN_PASSWORD=password
+KC_DB=postgres
+KC_DB_USERNAME=keycloak
+KC_DB_PASSWORD=password123
+KC_DB_URL=jdbc:postgresql://keycloakdb:5432/keycloak
+KC_HOSTNAME=keycloakdb
+KC_PORT=5432
+KC_DB_SCHEMA=keycloak
 ```
 
 2. Create network:
@@ -73,6 +96,8 @@ Requires NodeJS and npm
 1. Create a `.env.development` file in `frontend/` with the following environment variables
 ```
 REACT_APP_BASE_URL=http://localhost:8080
+REACT_APP_KEYCLOAK_URL=http://localhost:8282
+REACT_APP_REDIRECT_URI=http://localhost:3000
 ```
 
 2. Install dependencies:

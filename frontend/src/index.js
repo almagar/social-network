@@ -6,28 +6,29 @@ import reportWebVitals from './reportWebVitals';
 import Keycloak from 'keycloak-js';
 
 let initOptions = {
-  url: "http://localhost:8282/auth",
-  redirectUri: "http://localhost:3000/",
+  url: `${process.env.REACT_APP_KEYCLOAK_URL}/auth`,
+  redirectUri: process.env.REACT_APP_REDIRECT_URI,
   realm: "socialnetwork",
   clientId: "socialnetworkclient",
   onLoad: "login-required",
-  checkLoginIframe: false
+  checkLoginIframe: false,
+  token: null,
+  refreshToken: null
 }
 
 
 const keycloak = new Keycloak(initOptions);
 
-keycloak.init({
-    onLoad: initOptions.onLoad,
-    checkLoginIframe: initOptions.checkLoginIframe,
-    redirectUri: initOptions.redirectUri
-  })
+keycloak.init(initOptions)
   .then(auth => {
 
     if (!auth) {
       window.location.reload();
+      return;
     } else {
       console.info("Authenticated");
+      localStorage.setItem("sn-token", keycloak.token);
+      localStorage.setItem("sn-refresh-token", keycloak.refreshToken);
     }
 
     const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -37,13 +38,12 @@ keycloak.init({
       </React.StrictMode>
     );
 
-    localStorage.setItem("sn-token", keycloak.token);
-    localStorage.setItem("sn-refresh-token", keycloak.refreshToken);
-
     setInterval(() => {
       keycloak.updateToken(130).then(refreshed => {
         if (refreshed) {
-          console.debug("Token refreshed" + refreshed);
+          console.debug("Token refreshed " + refreshed);
+          localStorage.setItem("sn-token", keycloak.token);
+          localStorage.setItem("sn-refresh-token", keycloak.refreshToken);
         } else {
           console.warn("Token not refreshed, valid for "
             + Math.round(keycloak.tokenParsed.exp + keycloak.timeSkew - new Date().getTime() / 1000) + " seconds");

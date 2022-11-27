@@ -7,6 +7,6 @@ FROM maven:3.8.5-openjdk-17
 
 WORKDIR /backend
 COPY . .
-RUN mvn clean package
+RUN mvn -Dmaven.test.skip=true clean package
 
 CMD mvn spring-boot:run -Dspring-boot.run.profiles=production
