@@ -5,6 +5,7 @@ import Layout from "./components/Layout";
 import Posts from "./components/Posts";
 import Profile from "./components/Profile";
 import Search from "./components/Search";
+import Whiteboard from "./components/Whiteboard";
 import getPostsFromFollowing from "./loaders/posts";
 import getProfileData from "./loaders/profile";
 
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
       {
         path: "chat/:roomId",
         element: <Chat />,
+      },
+      {
+        path: "whiteboard",
+        element: <Whiteboard />,
       },
     ],
   },
