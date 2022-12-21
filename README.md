@@ -129,6 +129,15 @@ npm install
 node index.js
 ```
 
+#### Datasets (vertx)
+1. Set env variable
+```
+KEYCLOAK_CLIENT_SECRET=pbExJki6dSI4Jeypm5JsF84raGjtxWSR
+```
+
+2. Run the main method
+
+
 #### Frontend
 Requires NodeJS and npm
 

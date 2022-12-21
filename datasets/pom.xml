@@ -36,7 +36,11 @@
     </dependencyManagement>
 
     <dependencies>
-
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-config</artifactId>
+            <version>4.3.6</version>
+        </dependency>
         <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-auth-jwt</artifactId>
