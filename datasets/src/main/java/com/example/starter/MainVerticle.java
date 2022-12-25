@@ -8,6 +8,7 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.ext.auth.jwt.JWTAuthOptions;
 import io.vertx.ext.auth.oauth2.OAuth2FlowType;
 import io.vertx.ext.auth.oauth2.providers.KeycloakAuth;
+import io.vertx.ext.mongo.MongoClient;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.OAuth2AuthHandler;
 
@@ -39,12 +40,20 @@ public class MainVerticle extends AbstractVerticle {
                 .put("secret", keycloakClientSecret));
 
         // setup authentication and authorization
-        JWTAuthOptions jwtAuthOptions = new JWTAuthOptions(keycloakOptions);
         OAuth2AuthHandler oAuth2AuthHandler = OAuth2AuthHandler.create(
             vertx,
             KeycloakAuth.create(vertx, OAuth2FlowType.AUTH_CODE, keycloakOptions),
             "http://localhost:8888"
         );
+
+        // setup database
+        // TODO: config should be coming from ConfigMap
+        JsonObject mongoConfig = new JsonObject()
+            .put("db_name", "socialnetwork")
+            .put("connection_string", "mongodb://localhost:27017")
+            .put("username", "admin")
+            .put("password", "password");
+        MongoClient db = MongoClient.createShared(vertx, mongoConfig);
 
         Router router = Router.router(vertx);
 

@@ -51,7 +51,8 @@
         </dependency>
         <dependency>
             <groupId>io.vertx</groupId>
-            <artifactId>vertx-pg-client</artifactId>
+            <artifactId>vertx-mongo-client</artifactId>
+            <version>4.3.6</version>
         </dependency>
         <dependency>
             <groupId>io.vertx</groupId>

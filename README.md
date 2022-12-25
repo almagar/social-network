@@ -58,7 +58,7 @@ KC_DB_SCHEMA=keycloak
 docker network create socialnetwork
 ```
 
-3. Start the database:
+3. Start the postgres database:
 ```sh
 docker run --rm -d \
         --name db \
@@ -130,12 +130,25 @@ node index.js
 ```
 
 #### Datasets (vertx)
-1. Set env variable
+1. Set env variable, get value by going to the keycloak admin console at http://localhost:8282.
+Direct link [here](http://localhost:8282/auth/admin/master/console/#/socialnetwork/clients/39c8d8ec-4b5a-44c7-8689-0c95e740a412/credentials). Generate a new client secret, copy it and assign it to below env variable.
 ```
-KEYCLOAK_CLIENT_SECRET=pbExJki6dSI4Jeypm5JsF84raGjtxWSR
+KEYCLOAK_CLIENT_SECRET=<secret>
 ```
 
-2. Run the main method
+2. Start the mongodb database:
+```sh
+docker run --rm -d \
+    --name mongo \
+    -p 27017:27017 \
+    -e MONGO_INITDB_ROOT_USERNAME=admin \
+    -e MONGO_INITDB_ROOT_PASSWORD=password \
+    -e MONGO_INITDB_DATABASE=socialnetwork \
+    --network socialnetwork \
+    mongo:6.0.3-focal
+```
+
+3. Run the main method
 
 
 #### Frontend
