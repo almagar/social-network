@@ -144,6 +144,9 @@ function Whiteboard() {
                     onMouseUp={onMouseUp}
                     onMouseMove={draw}
                     ref={canvasRef}
+                    height={300}
+                    width={300}
+                    style='width: 300px, height: 300px, background: black'
                 />
             </div>
 

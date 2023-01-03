@@ -9,7 +9,12 @@
   "author": "Alma Garpenfeldt",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^16.0.3",
     "express": "^4.18.2",
-    "socket.io": "^4.5.4"
+    "pg": "^8.8.0",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.28.0",
+    "socket.io": "^4.5.4",
+    "uuid": "^9.0.0"
   }
 }
