@@ -8,8 +8,8 @@ const syncDrawPoint = require('./models/drawPoint');
 // Express server
 const express = require('express');
 const app = express(); // Creating Express Server
-const host = 'localhost' // Specifying Host
-const port = 8000 // Specifying Port number
+const host = process.env.EXPRESS_HOST;
+const port = process.env.EXPRESS_PORT;// Specifying Port number
 const http = require('http');
 const server = http.createServer(app);
 const cors = require('cors');
