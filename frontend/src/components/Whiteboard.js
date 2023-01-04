@@ -32,6 +32,24 @@ function Whiteboard({ chatId }) {
     const [thickness, setThickness] = useState(10);
     const [tool, setTool] = useState('pen');
 
+    const drawPointOnCanvas = (drawPoint) => {
+        if (drawPoint.tool === 'pen') {
+            contextRef.current.globalCompositeOperation = "source-over";
+            contextRef.current.strokeStyle = drawPoint.color;
+            contextRef.current.lineWidth = drawPoint.thickness;
+        } else {
+            contextRef.current.globalCompositeOperation = "destination-out";  
+            contextRef.current.strokeStyle = "rgba(255,255,255,1)";
+            contextRef.current.lineWidth = drawPoint.thickness;
+        }
+    
+        contextRef.current.beginPath();
+        contextRef.current.moveTo(drawPoint.x, drawPoint.y);
+        contextRef.current.ellipse(drawPoint.x, drawPoint.y, 0, 0, 0, 0, 0);
+        contextRef.current.stroke();
+        contextRef.current.closePath();
+    }
+
     useEffect(() => {
         axios.get(`http://localhost:8000/whiteboard/chatId/${chatId}`)
         .then(res => {
@@ -60,6 +78,18 @@ function Whiteboard({ chatId }) {
             return;
         }
 
+        axios.get(`http://localhost:8000/whiteboard/${whiteboardId}`)
+        .then(res => {
+            console.log(res.data.data);
+            let drawPoints = res.data.data;
+            for (let i = drawPoints.length - 1; i > 0; i--) {
+                drawPointOnCanvas(drawPoints[i]);
+            }
+        })
+        .catch(err => {
+            console.log(err)
+        })
+
         socket.on('connection', () => {
             setIsConnected(true);
         });
@@ -70,31 +100,8 @@ function Whiteboard({ chatId }) {
             setIsConnected(false);
         });
 
-        // sätter lyssnaren en gång men kör arrow functionen varje gpng event kommer
-
         socket.on('drawPoint', (drawPoint) => {
-            console.log('got draw point from socket');
-
-            const { x, y, color, thickness, tool } = drawPoint;
-
-            //const canvas = canvasRef.current;
-            //context.scale(2, 2);
-            //context.lineCap = 'round';
-            //context.strokeStyle = 'black';
-            //context.lineWidth = 5;
-
-            if (tool === 'pen') {
-                contextRef.current.strokeStyle = color;
-                contextRef.current.lineWidth = thickness;
-                contextRef.current.beginPath();
-                contextRef.current.moveTo(x, y);
-                contextRef.current.ellipse(x, y, 0, 0, 0, 0, 0);
-                contextRef.current.stroke();
-                contextRef.current.closePath();
-            } else {
-                contextRef.current.globalCompositeOperation = "destination-out";  
-                contextRef.current.strokeStyle = "rgba(255,255,255,1)";
-            }
+            drawPointOnCanvas(drawPoint);
         });
 
         return () => {
@@ -105,14 +112,10 @@ function Whiteboard({ chatId }) {
     }, [whiteboardId]);
 
     const onMouseDown = ({ nativeEvent }) => {
-        //const { offsetX, offsetY } = nativeEvent;
-        //contextRef.current.beginPath();
-        //contextRef.current.moveTo(offsetX, offsetY);
         setIsDrawing(true);
     };
 
     const onMouseUp = () => {
-        //contextRef.current.closePath();
         setIsDrawing(false);
     };
 
@@ -121,37 +124,22 @@ function Whiteboard({ chatId }) {
             return;
         }
 
-        const { offsetX, offsetY } = nativeEvent;
+        const { offsetX: x, offsetY: y } = nativeEvent;
         const drawPoint = {
-            x: offsetX,
-            y: offsetY,
-            color: color,
-            thickness: thickness,
-            tool: tool
+            whiteboardId,
+            x,
+            y,
+            color,
+            thickness,
+            tool
         }
 
-        if (tool === 'pen') {
-            contextRef.current.globalCompositeOperation = "source-over";
-            contextRef.current.strokeStyle = color;
-            contextRef.current.lineWidth = thickness;
-        } else {
-            contextRef.current.globalCompositeOperation = "destination-out";  
-            contextRef.current.strokeStyle = "rgba(255,255,255,1)";
-            contextRef.current.lineWidth = thickness;
-        }
-
-        contextRef.current.beginPath();
-        contextRef.current.moveTo(offsetX, offsetY);
-        contextRef.current.ellipse(offsetX, offsetY, 0, 0, 0, 0, 0);
-        contextRef.current.stroke();
-        contextRef.current.closePath();
+        drawPointOnCanvas(drawPoint);
         socket.emit("drawPoint", drawPoint);
     };
 
     return (
         <div>
-            <p>Connected: {'' + isConnected}</p>
-
             <div>
                 <canvas
                     onMouseDown={onMouseDown}
@@ -160,7 +148,7 @@ function Whiteboard({ chatId }) {
                     ref={canvasRef}
                     height={300}
                     width={300}
-                    style={{ width: "300px !important", height: "300px !important", background: "black" }}
+                    style={{ width: "300px !important", height: "300px !important" }}
                 />
             </div>
 

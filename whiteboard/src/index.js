@@ -3,7 +3,7 @@ require('dotenv').config();
 // Db
 const sequelize = require('./sequelize');
 const { syncWhiteboard } = require('./models/whiteboard');
-const syncDrawPoint = require('./models/drawPoint');
+const { syncDrawPoint } = require('./models/drawPoint');
 const { DataTypes } = require('sequelize');
 
 // Express server

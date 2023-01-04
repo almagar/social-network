@@ -25,7 +25,6 @@ const DrawPoint = sequelize.define('DrawPoint', {
     },
     color: {
         type: DataTypes.STRING,
-        allowNull: false
     },
     thickness: {
         type: DataTypes.INTEGER,
@@ -46,4 +45,7 @@ async function syncDrawPoint() {
     }
 }
 
-module.exports = syncDrawPoint;
+module.exports = { 
+    syncDrawPoint,
+    DrawPoint
+ };

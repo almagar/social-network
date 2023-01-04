@@ -6,20 +6,31 @@ const io = new Server(expressServer, {
     }
 });
 
+const { DrawPoint } = require('../models/drawPoint');
+
 io.on('connection', (socket) => {
-    let room;
     console.log('Receiver connected..')
 
     socket.on('join', (whiteboardId) => {
-        console.log(whiteboardId);
-        room = whiteboardId;
-        socket.join(room);
-        console.log('joining whiteboard-room ' + room);
+        socket.join(whiteboardId);
     });
 
-    socket.on('drawPoint', (drawPoint) => {
+    socket.on('drawPoint', async (drawPoint) => {
         console.log('got drawPoint');
-        io.to(room).emit('drawPoint', drawPoint);
-        console.log('emited drawPoint to room ' + room);
+        io.to(drawPoint.whiteboardId).emit('drawPoint', drawPoint);
+        console.log('emited drawPoint to room ' + drawPoint.whiteboardId);
+
+        try {
+            await DrawPoint.create({
+                whiteboardId: drawPoint.whiteboardId,
+                x: drawPoint.x,
+                y: drawPoint.y,
+                color: drawPoint.color,
+                thickness: drawPoint.thickness,
+                tool: drawPoint.tool
+            });
+        } catch (error) {
+            console.log(error);
+        }
     });
 });
