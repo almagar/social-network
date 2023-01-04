@@ -191,7 +191,7 @@ function Chat() {
                 </form>
             </GridItem>
             <GridItem area={'whiteboard'}>
-                <Whiteboard />
+                <Whiteboard chatId={room.id}/>
             </GridItem>
             <GridItem px='2' minHeight="100%" maxHeight="100%" height="100%" area={'messages'} overflowY="scroll">
                 <VStack>

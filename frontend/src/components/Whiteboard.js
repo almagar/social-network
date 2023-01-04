@@ -20,16 +20,27 @@ const socket = io("ws://localhost:8000", {
     //}
 });
 
-function Whiteboard() {
+function Whiteboard({ chatId }) {
     const [isConnected, setIsConnected] = useState(socket.connected);
+    const [whiteboardId, setWhiteboardId] = useState(null);
+
     const canvasRef = useRef();
     const contextRef = useRef();
+
     const [isDrawing, setIsDrawing] = useState(false);
     const [color, setColor] = useState('red');
     const [thickness, setThickness] = useState(10);
     const [tool, setTool] = useState('pen');
 
     useEffect(() => {
+        axios.get(`http://localhost:8000/whiteboard/chatId/${chatId}`)
+        .then(res => {
+            setWhiteboardId(res.data.data.id);
+        })
+        .catch(err => {
+            console.log(err)
+        })
+
         const canvas = canvasRef.current;
         canvas.width = window.innerWidth * 2;
         canvas.height = window.innerHeight * 2;
@@ -42,13 +53,18 @@ function Whiteboard() {
         context.strokeStyle = 'black';
         context.lineWidth = 5;
         contextRef.current = context;
-
     }, []);
 
     useEffect(() => {
+        if (whiteboardId === null) {
+            return;
+        }
+
         socket.on('connection', () => {
             setIsConnected(true);
         });
+
+        socket.emit('join', whiteboardId);
 
         socket.on('disconnect', () => {
             setIsConnected(false);
@@ -79,16 +95,14 @@ function Whiteboard() {
                 contextRef.current.globalCompositeOperation = "destination-out";  
                 contextRef.current.strokeStyle = "rgba(255,255,255,1)";
             }
-
-
         });
 
-        return () => { // när komponenten stängs
+        return () => {
             socket.off('connect');
             socket.off('disconnect');
             socket.off('drawPoint');
         };
-    }, []); // [] körs en gång när komponenten laddas in
+    }, [whiteboardId]);
 
     const onMouseDown = ({ nativeEvent }) => {
         //const { offsetX, offsetY } = nativeEvent;
@@ -131,7 +145,7 @@ function Whiteboard() {
         contextRef.current.ellipse(offsetX, offsetY, 0, 0, 0, 0, 0);
         contextRef.current.stroke();
         contextRef.current.closePath();
-        socket.emit("drawPoint", drawPoint)
+        socket.emit("drawPoint", drawPoint);
     };
 
     return (
@@ -146,7 +160,7 @@ function Whiteboard() {
                     ref={canvasRef}
                     height={300}
                     width={300}
-                    style='width: 300px, height: 300px, background: black'
+                    style={{ width: "300px !important", height: "300px !important", background: "black" }}
                 />
             </div>
 

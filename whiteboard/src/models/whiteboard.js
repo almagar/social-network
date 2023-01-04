@@ -4,8 +4,8 @@ const sequelize = require("../sequelize");
 const Whiteboard = sequelize.define('Whiteboard', {
     id: {
         type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
         primaryKey: true
-        // autogenerate?
     },
     chatId: {
         type: DataTypes.UUID,
@@ -25,7 +25,10 @@ async function syncWhiteboard() {
     } catch (error) {
         console.log(error)
     }
-}
+};
 
-module.exports = syncWhiteboard;
+module.exports = {
+    syncWhiteboard,
+    Whiteboard
+};
 

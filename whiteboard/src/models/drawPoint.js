@@ -4,7 +4,7 @@ const sequelize = require("../sequelize");
 const DrawPoint = sequelize.define('DrawPoint', {
     id: {
         type: DataTypes.UUID,
-        defaultValue: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
         primaryKey: true
     },
     whiteboardId: {

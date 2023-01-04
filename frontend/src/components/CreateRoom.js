@@ -6,7 +6,6 @@ import axios from "../axiosInstance";
 
 function CreateRoom({ getJoinedRooms }) {
     const [inputName, setInputName] = useState("");
-    const [whiteboardId, setWhiteboardId] = useState("");
     const toast = useToast();
 
     const handleCreateRoom = e => {
@@ -24,17 +23,16 @@ function CreateRoom({ getJoinedRooms }) {
                     isClosable: true,
                 })
                 getJoinedRooms();
-                const roomId = res.data.data.id;
-                const data = {
-                    name: inputName,
-                    roomId: roomId
+                const chatId = res.data.data.id;
+                const whiteboardData = {
+                    chatName: inputName,
+                    chatId: chatId
                 };
 
-                axios.post("http://localhost:8000/whiteboard", data, { headers: { "Content-Type": "application/json"}})
+                axios.post("http://localhost:8000/whiteboard", whiteboardData, { headers: { "Content-Type": "application/json"}})
                 .then(res => {
                     const id = res.data.id;
-                    setWhiteboardId(id); // todo remove
-                    console.log("created whiteboard with id " + whiteboardId);
+                    console.log("created whiteboard with id " + id);
                 })
                 .catch(err => {
                     console.log(err)
