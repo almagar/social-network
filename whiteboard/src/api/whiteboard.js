@@ -1,10 +1,10 @@
-const { express } = require('../');
+const { express, keycloak } = require('../');
 const { Whiteboard } = require('../models/whiteboard');
 const { DrawPoint } = require('../models/drawPoint');
 
 const whiteboard = express.Router();
 
-whiteboard.post('/', async (req, res) => {
+whiteboard.post('/', keycloak.protect(), async (req, res) => {
     const body = req.body;
     try {
         const data = await Whiteboard.create({
@@ -18,7 +18,7 @@ whiteboard.post('/', async (req, res) => {
     }
 });
 
-whiteboard.get('/chatId/:id', async (req, res) => {
+whiteboard.get('/chatId/:id', keycloak.protect(), async (req, res) => {
     const chatId = req.params.id;
     try {
         const data = await Whiteboard.findOne({
@@ -33,7 +33,7 @@ whiteboard.get('/chatId/:id', async (req, res) => {
     }
 });
 
-whiteboard.get('/:id', async (req, res) => {
+whiteboard.get('/:id', keycloak.protect(), async (req, res) => {
     const id = req.params.id;
     try {
         const data = await DrawPoint.findAll({

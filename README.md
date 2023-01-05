@@ -102,6 +102,8 @@ POSTGRES_PORT="8383"
 POSTGRES_DB="whiteboard"
 POSTGRES_USER="whiteboarduser"
 POSTGRES_PWD="123456"
+
+KEYCLOAK_SECRET=""
 ```
 
 2. Start the database:

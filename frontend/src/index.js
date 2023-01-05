@@ -33,9 +33,7 @@ keycloak.init(initOptions)
 
     const root = ReactDOM.createRoot(document.getElementById("root"));
     root.render(
-      <React.StrictMode>
-        <AppRouter />
-      </React.StrictMode>
+      <AppRouter />
     );
 
     setInterval(() => {
@@ -57,6 +55,6 @@ keycloak.init(initOptions)
     // to log results (for example: reportWebVitals(console.log))
     // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
     reportWebVitals();
-}).catch(() => {
-  console.error("Keycloak authentication failed")
-});
+  }).catch(() => {
+    console.error("Keycloak authentication failed")
+  });
