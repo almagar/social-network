@@ -19,7 +19,8 @@ public class GetWeatherConditionSummaryHandler implements Handler<RoutingContext
 
     @Override
     public void handle(RoutingContext ctx) {
-        weatherForecastService.getHourlyWeatherForecast()
+        String location = ctx.request().params().get("location");
+        weatherForecastService.getHourlyWeatherForecast(location)
             .onSuccess(forecast -> {
                 var weatherForecasts = forecast.getJsonArray("list")
                     .stream()

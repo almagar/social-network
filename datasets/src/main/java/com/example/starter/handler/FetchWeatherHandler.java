@@ -12,6 +12,6 @@ public class FetchWeatherHandler implements Handler<Long> {
 
     @Override
     public void handle(Long aLong) {
-        weatherForecastService.getHourlyWeatherForecast();
+        weatherForecastService.getHourlyWeatherForecast("stockholm");
     }
 }

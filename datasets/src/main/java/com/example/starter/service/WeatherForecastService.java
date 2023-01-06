@@ -9,9 +9,13 @@ import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.client.predicate.ResponsePredicate;
 import io.vertx.ext.web.codec.BodyCodec;
+import org.apache.commons.lang3.StringUtils;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Locale;
 
 public class WeatherForecastService {
     private final WebClient webClient;
@@ -29,9 +33,13 @@ public class WeatherForecastService {
         }
     }
 
-    public Future<JsonObject> getHourlyWeatherForecast() {
+    public Future<JsonObject> getHourlyWeatherForecast(String location) {
         var time = LocalDateTime.now().truncatedTo(ChronoUnit.HOURS);
-        var query = new JsonObject().put("createdAt", Json.encode(time));
+        // TODO: find out why query doesn't work with city name
+        var query = new JsonObject()
+            .put("createdAt", Json.encode(time))
+            .put("city", new JsonObject().put("name", StringUtils.capitalize(location)));
+        System.out.println(query);
         Promise<JsonObject> promise = Promise.promise();
         // try to find the forecast in our database first
         db.findOne("weatherForecasts", query, null, ar -> {
@@ -50,13 +58,16 @@ public class WeatherForecastService {
             }
         });
         return promise.future()
-            .recover(cause -> fetchWeatherForecast()) // if not found, fetch from weather api
+            .recover(cause -> fetchWeatherForecast(location)) // if not found, fetch from weather api
             .onSuccess(this::saveWeatherForecast);
     }
 
-    private Future<JsonObject> fetchWeatherForecast() {
+    private Future<JsonObject> fetchWeatherForecast(String location) {
         System.out.println("fetching from api");
-        var url = String.format("https://api.openweathermap.org/data/2.5/forecast?q=stockholm&units=metric&appid=%s", apiKey);
+        var escapedLocation = URLEncoder.encode(location.toLowerCase(Locale.ROOT), StandardCharsets.UTF_8);
+        var url = String.format("https://api.openweathermap.org/data/2.5/forecast?q=%s&units=metric&appid=%s",
+            escapedLocation, apiKey);
+        System.out.println(url);
         var request = webClient
             .getAbs(url)
             .ssl(true)
