@@ -1,6 +1,7 @@
-import { Grid, GridItem, LinkBox, VStack, Text } from '@chakra-ui/react'
+import { Grid, GridItem, LinkBox, VStack, Text, Stack } from '@chakra-ui/react'
 import { NavLink, Outlet, useLoaderData } from "react-router-dom";
 import Sidebar from './Sidebar';
+import WeatherForecastStats from './WeatherForecastStats';
 
 function Layout(props) {
     const data = useLoaderData();
@@ -15,11 +16,15 @@ function Layout(props) {
             fontWeight='bold'
         >
             <GridItem px='2' area={'nav'} py="50px">
-                <VStack spacing={4} width="80%" alignItems="start">
-                    <LinkBox justifySelf="left" as={NavLink} to="/">Home</LinkBox>
-                    <LinkBox justifySelf="left" as={NavLink} to="/profile">Profile</LinkBox>
-                    <LinkBox justifySelf="left" as={NavLink} to="/search">Search</LinkBox>
-                    <LinkBox justifySelf="left" as={NavLink} to="/whiteboard">Whiteboard</LinkBox>
+                <VStack spacing={20}>
+                    <VStack spacing={4} width="80%" alignItems="start">
+                        <LinkBox justifySelf="left" as={NavLink} to="/">Home</LinkBox>
+                        <LinkBox justifySelf="left" as={NavLink} to="/profile">Profile</LinkBox>
+                        <LinkBox justifySelf="left" as={NavLink} to="/search">Search</LinkBox>
+                    </VStack>
+                    <Stack width="80%" alignItems="start">
+                        <WeatherForecastStats />
+                    </Stack>
                 </VStack>
             </GridItem>
             <GridItem

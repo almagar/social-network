@@ -24,6 +24,7 @@ KC_DB_SCHEMA=keycloak
 2. Create a `.env.production` file in `frontend/` with the following environment variables
 ```
 REACT_APP_BASE_URL=http://localhost:8080/api
+REACT_APP_VERTX_URL=http://localhost:8080/vertx
 REACT_APP_KEYCLOAK_URL=http://localhost:8080
 REACT_APP_REDIRECT_URI=http://localhost:8080
 ```
@@ -130,10 +131,12 @@ node index.js
 ```
 
 #### Datasets (vertx)
-1. Set env variable, get value by going to the keycloak admin console at http://localhost:8282.
-Direct link [here](http://localhost:8282/auth/admin/master/console/#/socialnetwork/clients/39c8d8ec-4b5a-44c7-8689-0c95e740a412/credentials). Generate a new client secret, copy it and assign it to below env variable.
+1. Set env variable, get value by going to the keycloak admin console at [http://localhost:8282](http://localhost:8282).
+Direct link [here](http://localhost:8282/auth/admin/master/console/#/socialnetwork/clients/39c8d8ec-4b5a-44c7-8689-0c95e740a412/credentials). Generate a new client secret, copy it and assign it to KEYCLOAK\_CLIENT\_SECRET.
+You will also have to set the `WEATHER_API_KEY` environment variable which you can get [here](https://home.openweathermap.org/api_keys).
 ```
 KEYCLOAK_CLIENT_SECRET=<secret>
+WEATHER_API_KEY=<key>
 ```
 
 2. Start the mongodb database:
@@ -157,6 +160,7 @@ Requires NodeJS and npm
 1. Create a `.env.development` file in `frontend/` with the following environment variables
 ```
 REACT_APP_BASE_URL=http://localhost:8080
+REACT_APP_VERTX_URL=http://localhost:8888
 REACT_APP_KEYCLOAK_URL=http://localhost:8282
 REACT_APP_REDIRECT_URI=http://localhost:3000
 ```
