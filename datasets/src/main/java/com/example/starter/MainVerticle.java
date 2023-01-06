@@ -1,5 +1,10 @@
 package com.example.starter;
 
+import com.example.starter.handler.FetchWeatherHandler;
+import com.example.starter.handler.GetWeatherConditionSummaryHandler;
+import com.example.starter.handler.GetWeatherForecastHandler;
+import com.example.starter.handler.GetWeatherTempStatsHandler;
+import com.example.starter.service.WeatherForecastService;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.vertx.core.AbstractVerticle;
@@ -12,6 +17,7 @@ import io.vertx.ext.auth.oauth2.OAuth2FlowType;
 import io.vertx.ext.auth.oauth2.providers.KeycloakAuth;
 import io.vertx.ext.mongo.MongoClient;
 import io.vertx.ext.web.Router;
+import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.handler.OAuth2AuthHandler;
 
 import javax.naming.ConfigurationException;
@@ -38,7 +44,7 @@ public class MainVerticle extends AbstractVerticle {
         if (keycloakClientSecret == null)
             throw new ConfigurationException("Error: KEYCLOAK_CLIENT_SECRET is not defined");
 
-        JsonObject keycloakOptions = new JsonObject()
+        var keycloakOptions = new JsonObject()
             .put("auth-server-url", KEYCLOAK_SERVER_URL)
             .put("realm", KEYCLOAK_REALM)
             .put("resource", KEYCLOAK_CLIENT_ID)
@@ -46,7 +52,7 @@ public class MainVerticle extends AbstractVerticle {
                 .put("secret", keycloakClientSecret));
 
         // setup authentication and authorization
-        OAuth2AuthHandler oAuth2AuthHandler = OAuth2AuthHandler.create(
+        var oAuth2AuthHandler = OAuth2AuthHandler.create(
             vertx,
             KeycloakAuth.create(vertx, OAuth2FlowType.AUTH_CODE, keycloakOptions),
             "http://localhost:8888"
@@ -54,19 +60,36 @@ public class MainVerticle extends AbstractVerticle {
 
         // setup database
         // TODO: config should be coming from ConfigMap
-        JsonObject mongoConfig = new JsonObject()
+        var mongoConfig = new JsonObject()
             .put("db_name", "socialnetwork")
             .put("connection_string", "mongodb://localhost:27017")
             .put("username", "admin")
             .put("password", "password");
-        MongoClient db = MongoClient.createShared(vertx, mongoConfig);
+        var db = MongoClient.createShared(vertx, mongoConfig);
 
-        Router router = Router.router(vertx);
+        // create web client
+        var webClient = WebClient.create(vertx);
 
+        // create service classes
+        var weatherForecastService = new WeatherForecastService(webClient, db);
+
+        var router = Router.router(vertx);
+
+        // setup periodic events
+        // fetch new weather forecast every hour
+        var fetchWeatherHandler = new FetchWeatherHandler(weatherForecastService);
+        vertx.setPeriodic(0, 1000 * 60 * 60, fetchWeatherHandler);
+
+        // setup handlers
+        var getWeatherForecastHandler = new GetWeatherForecastHandler(weatherForecastService);
+        var getWeatherConditionSummaryHandler = new GetWeatherConditionSummaryHandler(weatherForecastService);
+        var getWeatherTempStatsHandler = new GetWeatherTempStatsHandler(weatherForecastService);
 
         // setup routes
         router.route().handler(oAuth2AuthHandler);
-        router.route(HttpMethod.GET, "/").handler(ctx -> ctx.response().end("User: " + ctx.user().principal()));
+        router.route(HttpMethod.GET, "/weather").handler(getWeatherForecastHandler);
+        router.route(HttpMethod.GET, "/weather/conditions").handler(getWeatherConditionSummaryHandler);
+        router.route(HttpMethod.GET, "/weather/temps").handler(getWeatherTempStatsHandler);
 
         vertx.createHttpServer()
             .requestHandler(router)
