@@ -18,6 +18,7 @@ import io.vertx.ext.auth.oauth2.providers.KeycloakAuth;
 import io.vertx.ext.mongo.MongoClient;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.client.WebClient;
+import io.vertx.ext.web.handler.CorsHandler;
 import io.vertx.ext.web.handler.OAuth2AuthHandler;
 
 import javax.naming.ConfigurationException;
@@ -75,6 +76,9 @@ public class MainVerticle extends AbstractVerticle {
 
         var router = Router.router(vertx);
 
+        // configure cors
+        router.route().handler(configureCorsHandler());
+
         // setup periodic events
         // fetch new weather forecast every hour
         var fetchWeatherHandler = new FetchWeatherHandler(weatherForecastService);
@@ -101,5 +105,17 @@ public class MainVerticle extends AbstractVerticle {
                     startPromise.fail(http.cause());
                 }
             });
+    }
+
+    private static CorsHandler configureCorsHandler() {
+        return CorsHandler.create("http://localhost:3000")
+            .allowCredentials(true)
+            .allowedMethod(HttpMethod.GET)
+            .allowedHeader("Content-Type")
+            .allowedHeader("Authorization")
+            .allowedHeader("Access-Control-Request-Method")
+            .allowedHeader("Access-Control-Allow-Credentials")
+            .allowedHeader("Access-Control-Allow-Origin")
+            .allowedHeader("Access-Control-Allow-Headers");
     }
 }
