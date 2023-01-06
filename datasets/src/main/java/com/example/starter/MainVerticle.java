@@ -1,11 +1,13 @@
 package com.example.starter;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Launcher;
 import io.vertx.core.Promise;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
-import io.vertx.ext.auth.jwt.JWTAuthOptions;
+import io.vertx.core.json.jackson.DatabindCodec;
 import io.vertx.ext.auth.oauth2.OAuth2FlowType;
 import io.vertx.ext.auth.oauth2.providers.KeycloakAuth;
 import io.vertx.ext.mongo.MongoClient;
@@ -27,6 +29,10 @@ public class MainVerticle extends AbstractVerticle {
 
     @Override
     public void start(Promise<Void> startPromise) throws Exception {
+        // enable jackson to be able to serialize and deserialize Java 8 dates and time
+        DatabindCodec.mapper().registerModule(new JavaTimeModule());
+        DatabindCodec.mapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
         // TODO: config should be coming from ConfigMap
         String keycloakClientSecret = System.getenv("KEYCLOAK_CLIENT_SECRET");
         if (keycloakClientSecret == null)
