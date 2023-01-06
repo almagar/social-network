@@ -14,7 +14,8 @@ public class GetWeatherForecastHandler implements Handler<RoutingContext> {
 
     @Override
     public void handle(RoutingContext ctx) {
-        weatherForecastService.getHourlyWeatherForecast()
+        String location = ctx.request().params().get("location");
+        weatherForecastService.getHourlyWeatherForecast(location)
             .onSuccess(ctx::json)
             .onFailure(cause -> {
                 ctx.response().setStatusCode(404);
