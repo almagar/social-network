@@ -7,6 +7,7 @@ import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 
 import axios from "../axiosInstance";
+import Whiteboard from "./Whiteboard";
 
 
 function Chat() {
@@ -161,6 +162,7 @@ function Chat() {
     return (
         <Grid
             templateAreas={`"info"
+                            "whiteboard"
                             "messages"
                             "input"`}
             gridTemplateRows={'50px 1fr auto'}
@@ -187,6 +189,9 @@ function Chat() {
                         </InputRightElement>
                     </InputGroup>
                 </form>
+            </GridItem>
+            <GridItem area={'whiteboard'}>
+                <Whiteboard chatId={room.id}/>
             </GridItem>
             <GridItem px='2' minHeight="100%" maxHeight="100%" height="100%" area={'messages'} overflowY="scroll">
                 <VStack>

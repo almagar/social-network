@@ -23,6 +23,20 @@ function CreateRoom({ getJoinedRooms }) {
                     isClosable: true,
                 })
                 getJoinedRooms();
+                const chatId = res.data.data.id;
+                const whiteboardData = {
+                    chatName: inputName,
+                    chatId: chatId
+                };
+
+                axios.post("http://localhost:8000/whiteboard", whiteboardData, { headers: { "Content-Type": "application/json"}})
+                .then(res => {
+                    const id = res.data.id;
+                    console.log("created whiteboard with id " + id);
+                })
+                .catch(err => {
+                    console.log(err)
+                })
             })
             .catch(err => {
                 console.log("didn't create room")

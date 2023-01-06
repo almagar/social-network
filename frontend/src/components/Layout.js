@@ -19,6 +19,7 @@ function Layout(props) {
                     <LinkBox justifySelf="left" as={NavLink} to="/">Home</LinkBox>
                     <LinkBox justifySelf="left" as={NavLink} to="/profile">Profile</LinkBox>
                     <LinkBox justifySelf="left" as={NavLink} to="/search">Search</LinkBox>
+                    <LinkBox justifySelf="left" as={NavLink} to="/whiteboard">Whiteboard</LinkBox>
                 </VStack>
             </GridItem>
             <GridItem

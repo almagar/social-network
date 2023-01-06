@@ -89,6 +89,45 @@ docker run --rm -d \
 ./mvnw spring-boot:run
 ```
 
+#### Whiteboard
+Requires NodeJs and npm
+
+1. Create a `.env` file in `whiteboard/` with the following environment variables
+```
+EXPRESS_HOST="localhost"
+EXPRESS_PORT="8000"
+
+POSTGRES_HOST="localhost"
+POSTGRES_PORT="8383"
+POSTGRES_DB="whiteboard"
+POSTGRES_USER="whiteboarduser"
+POSTGRES_PWD="123456"
+
+KEYCLOAK_SECRET=""
+```
+
+2. Start the database:
+```sh
+docker run --rm -d \
+        --name whiteboarddb \
+        -p 8383:5432 \
+        -e POSTGRES_USER=whiteboarduser \
+        -e POSTGRES_PASSWORD=123456 \
+        -e POSTGRES_DATABASE=whiteboard \
+        -v $(pwd)/whiteboard/db/:/docker-entrypoint-initdb.d/ \
+        --network socialnetwork \
+        postgres:15.0-bullseye
+```
+
+3. Install dependencies:
+```sh
+npm install
+```
+
+4. Start the backend:
+```sh
+node index.js
+```
 
 #### Frontend
 Requires NodeJS and npm
