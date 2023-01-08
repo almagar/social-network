@@ -14,6 +14,8 @@ public class SocialNetworkApplication {
     }
 
     public static void main(String[] args) {
+        System.out.println("properties:");  // TODO: remove, temporary
+        System.out.println(System.getProperties());
         SpringApplication.run(SocialNetworkApplication.class, args);
     }
 }
