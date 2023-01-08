@@ -8,13 +8,12 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication
 public class SocialNetworkApplication {
 
-	@Bean
-	public KeycloakSpringBootConfigResolver keycloakConfigResolver() {
-		return new KeycloakSpringBootConfigResolver();
-	}
+    @Bean
+    public KeycloakSpringBootConfigResolver keycloakConfigResolver() {
+        return new KeycloakSpringBootConfigResolver();
+    }
 
-	public static void main(String[] args) {
-		SpringApplication.run(SocialNetworkApplication.class, args);
-	}
-
+    public static void main(String[] args) {
+        SpringApplication.run(SocialNetworkApplication.class, args);
+    }
 }

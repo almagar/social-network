@@ -40,7 +40,6 @@ public class MainVerticle extends AbstractVerticle {
         DatabindCodec.mapper().registerModule(new JavaTimeModule());
         DatabindCodec.mapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-        // TODO: config should be coming from ConfigMap
         String keycloakClientSecret = System.getenv("KEYCLOAK_CLIENT_SECRET");
         if (keycloakClientSecret == null)
             throw new ConfigurationException("Error: KEYCLOAK_CLIENT_SECRET is not defined");
@@ -60,7 +59,6 @@ public class MainVerticle extends AbstractVerticle {
         );
 
         // setup database
-        // TODO: config should be coming from ConfigMap
         var mongoConfig = new JsonObject()
             .put("db_name", "socialnetwork")
             .put("connection_string", "mongodb://localhost:27017")
