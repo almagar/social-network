@@ -15,9 +15,9 @@ ENV VERTICLE_HOME /usr/verticles
 
 EXPOSE 8888
 
-COPY --from=builder /workdir/target/*-fat.jar $VERTICLE_HOME/
+COPY --from=builder /workdir/target/starter-1.0.0-SNAPSHOT.jar $VERTICLE_HOME/
 
-ENV VERTICLE_FILE $VERTICLE_HOME/*-fat.jar
+ENV VERTICLE_FILE $VERTICLE_HOME/starter-1.0.0-SNAPSHOT.jar
 
 WORKDIR $VERTICLE_HOME
 
