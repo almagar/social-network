@@ -8,9 +8,9 @@ const { DataTypes } = require('sequelize');
 
 // Express server
 const express = require('express');
-const app = express(); // Creating Express Server
+const app = express();
 const host = process.env.EXPRESS_HOST;
-const port = process.env.EXPRESS_PORT;// Specifying Port number
+const port = process.env.EXPRESS_PORT;
 const http = require('http');
 const server = http.createServer(app);
 
@@ -34,15 +34,12 @@ module.exports = {
     keycloak
 };
 
-
-//express forts
+// Cors
 const cors = require('cors');
 app.use(cors());
 app.use(express.json());
 
-
-
-// API
+// Endpoints
 app.use('/whiteboard', require('./api/whiteboard'));
 
 // Websocket
