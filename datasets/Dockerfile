@@ -5,7 +5,7 @@ WORKDIR /workdir
 
 COPY . /workdir/
 
-RUN mvn package -DskipTests -B
+RUN mvn package -Dmaven.test.skip=true -B
 
 
 # runner
