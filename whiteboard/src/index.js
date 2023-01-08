@@ -1,12 +1,10 @@
-require('dotenv').config();
+require('dotenv').config({ path: process.env.WHITEBOARD_PRODUCTION ? '.env.production' : '.env' });
 
 // Db
 const sequelize = require('./sequelize');
 const { syncWhiteboard } = require('./models/whiteboard');
 const { syncDrawPoint } = require('./models/drawPoint');
 const { DataTypes } = require('sequelize');
-
-
 
 // Express server
 const express = require('express');
