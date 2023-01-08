@@ -8,4 +8,4 @@ FROM eclipse-temurin:17-jre-alpine
 WORKDIR /backend
 COPY --from=builder /backend/target/social-network-0.0.1-SNAPSHOT.jar .
 
-ENTRYPOINT ["java", "-jar", "-Dspring-boot.run.profiles=production", "social-network-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=production", "social-network-0.0.1-SNAPSHOT.jar"]
